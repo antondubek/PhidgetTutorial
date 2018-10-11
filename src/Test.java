@@ -11,6 +11,7 @@ public class Test extends PApplet{
     VoltageRatioInput chLin1;
     VoltageRatioInput chLin2;
     DigitalOutput redLED;
+    DigitalInput click;
     RCServo servo;
 
 
@@ -29,18 +30,21 @@ public class Test extends PApplet{
             chLin2 = new VoltageRatioInput();
             redLED = new DigitalOutput();
             servo = new RCServo();
+            click = new DigitalInput();
 
             chRota.setDeviceSerialNumber(274077);
             chLin1.setDeviceSerialNumber(274077);
             chLin2.setDeviceSerialNumber(274077);
             redLED.setDeviceSerialNumber(274077);
             servo.setDeviceSerialNumber(306007);
+            click.setDeviceSerialNumber(274077);
 
             chRota.setChannel(0);
             chLin1.setChannel(1);
             chLin2.setChannel(2);
             redLED.setChannel(0);
             servo.setChannel(0);
+            click.setChannel(0);
 
             //chRota.setDataInterval(1);
 
@@ -49,6 +53,7 @@ public class Test extends PApplet{
             chLin2.open();
             redLED.open();
             servo.open(5000);
+            click.open();
 
             chRota.addVoltageRatioChangeListener(myBall);
             chLin1.addVoltageRatioChangeListener(myBall);
@@ -94,6 +99,20 @@ public class Test extends PApplet{
 
         myBall.draw();
         redBall.draw();
+
+        boolean state = false;
+
+        try {
+            state = click.getState();
+        } catch (Exception e){
+            println(e.toString());
+        }
+
+        if(state){
+            myBall.setColor(0,255,0);
+        }
+
+
     }
 
     class Ball implements VoltageRatioInputVoltageRatioChangeListener {
