@@ -19,6 +19,7 @@ public class Test extends PApplet{
 
     Ministick myBall = new Ministick(this, game,0,0);
     Rotation myArc = new Rotation(this, game);
+    Click myClick = new Click(this, game);
 
 
     public void settings(){
@@ -61,6 +62,7 @@ public class Test extends PApplet{
             chRota.addVoltageRatioChangeListener(myArc);
             chLin1.addVoltageRatioChangeListener(myBall);
             chLin2.addVoltageRatioChangeListener(myBall);
+            click.addStateChangeListener(myClick);
 
             redLED.setState(true);
             servo.setTargetPosition(0);
@@ -83,14 +85,7 @@ public class Test extends PApplet{
 
         myBall.draw();
         myArc.draw();
-
-        boolean state = false;
-
-        try {
-            state = click.getState();
-        } catch (Exception e){
-            println(e.toString());
-        }
+        myClick.draw();
 
 
     }
