@@ -55,7 +55,7 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
         // Draw top line and update to green if over
         p.strokeWeight(4);
         p.stroke(topLineR, topLineG, topLineB);
-        p.line((width/2) - 100, (height/2) - 100, (width/2)+100, (height/2) -100);
+        p.line((width/5) - 100, (height/2) - 100, (width/5)+100, (height/2) -100);
         if(y < ((height/2)-100)){
             setTopLineColor(0,255,0);
             top = true;
@@ -63,7 +63,7 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
 
         // Draw bottom line and update to green if below
         p.stroke(botLineR, botLineG, botLineB);
-        p.line((width/2) - 100, (height/2) + 100, (width/2)+100, (height/2) +100);
+        p.line((width/5) - 100, (height/2) + 100, (width/5)+100, (height/2) +100);
         if(y > ((height/2)+100)){
             setBotLineColor(0,255,0);
             bottom = true;
@@ -79,8 +79,8 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
     public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent rce) {
         try {
             if (rce.getSource().getChannel()==1) {
-                addX = (float) (rce.getVoltageRatio()*width/(2));
-                addX += (width/2) - addX;
+                addX = (float) (rce.getVoltageRatio()*width/(5));
+                addX += (width/5) - addX;
                 //System.out.println(addX);
             }
             if (rce.getSource().getChannel()==2) {

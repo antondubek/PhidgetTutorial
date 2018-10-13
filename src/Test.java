@@ -15,7 +15,7 @@ public class Test extends PApplet{
     DigitalInput click;
     RCServo servo;
 
-    Game game = new Game(600, 600, 51,51,51);
+    Game game = new Game(1800, 600, 51,51,51);
 
     Ministick myBall = new Ministick(this, game,0,0);
     Rotation myArc = new Rotation(this, game);

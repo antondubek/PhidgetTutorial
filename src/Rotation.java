@@ -32,9 +32,9 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
 
     public Rotation(PApplet p, Game game){
         this.p = p;
-        this.x = game.getWidth()/6;
-        this.y = game.getHeight()/6;
-        this.d = (float) (game.getWidth() * 0.2);
+        this.x = (game.getWidth()/5) * 2;
+        this.y = game.getHeight()/2;
+        this.d = (float) (game.getHeight() *0.4);
         this.game = game;
     }
 
