@@ -58,7 +58,7 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
 
         // Inner circle
         p.stroke(innerR,innerG,innerB);
-        p.fill(51, 51, 51);
+        p.fill(backgroundR, backgroundG, backgroundB);
         p.ellipse(x, y, d-30, d-30);
 
         if(progress < 0.5){
@@ -74,7 +74,6 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
         if(lower && upper){
             setArc(0,255,0);
         }
-
 
     }
 
