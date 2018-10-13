@@ -16,10 +16,19 @@ public class Test extends PApplet{
 
 
     Ministick myBall = new Ministick(0,0);
+    Rotation myArc = new Rotation();
+
+    int backgroundR = 51;
+    int backgroundG = 51;
+    int backgroundB = 51;
+
 
 
     public void settings(){
         size(600,600);
+
+        // Makes things look nicer with some Anti-Aliasing
+        smooth();
 
         try {
             chRota = new VoltageRatioInput();
@@ -52,7 +61,7 @@ public class Test extends PApplet{
             servo.open(5000);
             click.open();
 
-            chRota.addVoltageRatioChangeListener(myBall);
+            chRota.addVoltageRatioChangeListener(myArc);
             chLin1.addVoltageRatioChangeListener(myBall);
             chLin2.addVoltageRatioChangeListener(myBall);
 
@@ -73,25 +82,10 @@ public class Test extends PApplet{
     }
 
     public void draw() {
-        background(200);
-
-        /* Point A
-        float addX = 0;
-        float addY = 0;
-        float size = 0;
-
-        try {
-            addX = (float) (width*chRota.getSensorValue());
-            addY = (float) (height*chLin1.getSensorValue());
-            size = (float) (height*chLin2.getSensorValue()/10);
-        } catch (Exception e) {
-            println(e.toString());
-        }
-        myBall.setSensorValues(addX,addY,size);
-        // Point B */
+        background(backgroundR, backgroundG, backgroundB);
 
         myBall.draw();
-        //redBall.draw();
+        myArc.draw();
 
         boolean state = false;
 
@@ -158,26 +152,22 @@ public class Test extends PApplet{
             }
         }
 
-        /*public void setSensorValues(float x, float y, float s) {
-            this.addX = x;
-            this.addY = y;
-            this.size = s;
-        }*/
-
         public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent rce) {
             try {
-                if (rce.getSource().getChannel()==0) {
+                if (rce.getSource().getChannel()==1) {
                     addX = (float) (rce.getVoltageRatio()*width/(2));
                     addX += (width/2) - addX;
                     //System.out.println(addX);
                 }
-                if (rce.getSource().getChannel()==1) {
+                if (rce.getSource().getChannel()==2) {
                     addY = (float) rce.getVoltageRatio()*height/(2) + 158;
                     //System.out.println(addY);
                 }
-                if (rce.getSource().getChannel()==2) {
+
+                // Alters size by going left right.
+                /*if (rce.getSource().getChannel()==2) {
                     size = (float) rce.getVoltageRatio()*100;
-                }
+                }*/
             } catch (PhidgetException e) {
                 System.out.println(e.toString());
             }
@@ -199,6 +189,53 @@ public class Test extends PApplet{
             this.botLineR = r;
             this.botLineG = g;
             this.botLineB = b;
+        }
+    }
+
+
+    class Rotation implements VoltageRatioInputVoltageRatioChangeListener {
+        float progress = 9;
+
+        float x;
+        float y;
+        float d;
+
+        public Rotation(){
+            this.x = width/2;
+            this.y = height/2;
+            this.d = (float) (width * 0.8);
+        }
+
+        void draw(){
+
+            // show full circles
+            ellipseMode(CENTER);
+            fill(255, 0, 0, 50);
+            ellipse(x, y, d, d);//yellow1
+
+            showArcs();
+
+            fill(backgroundR, backgroundG, backgroundB);
+            ellipse(x, y, d-30, d-30);//green1
+
+
+
+        }
+        @Override
+        public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent lol) {
+            //Add to progress
+            float input = (float) (lol.getVoltageRatio());
+            float progress =  (float) ((input-0.0)/(0.999 - 0.0) * (130-0) + 0);
+        }
+
+        void showArcs() {
+
+            fill(255, 0, 0, 200);  // !!!!!!!!!!!!!!!!!!!!!!!!!
+            arc(x, y, d, d, PI+HALF_PI, map(progress, 0, 100, PI+HALF_PI, PI+HALF_PI+PI+HALF_PI));//yellow  !!!!!!!!!!!!!!!
+
+
+            fill(14, 18, 30);
+            arc(x, y, d-90, d-90, 0, TWO_PI);//center
         }
     }
 }
