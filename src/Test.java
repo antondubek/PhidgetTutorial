@@ -110,16 +110,19 @@ public class Test extends PApplet{
         float size = 10;
 
         int ballR = 0;
-        int ballG = 0;
-        int ballB = 0;
+        int ballG = 191;
+        int ballB = 255;
 
         int topLineR = 0;
-        int topLineG = 0;
-        int topLineB = 0;
+        int topLineG = 191;
+        int topLineB = 255;
 
         int botLineR = 0;
-        int botLineG = 0;
-        int botLineB = 0;
+        int botLineG = 191;
+        int botLineB = 255;
+
+        boolean top = false;
+        boolean bottom = false;
 
 
         Ministick(float x, float y) {
@@ -142,6 +145,7 @@ public class Test extends PApplet{
             line((width/2) - 100, (height/2) - 100, (width/2)+100, (height/2) -100);
             if(y < ((height/2)-100)){
                 setTopLineColor(0,255,0);
+                top = true;
             }
 
             // Draw bottom line and update to green if below
@@ -149,7 +153,14 @@ public class Test extends PApplet{
             line((width/2) - 100, (height/2) + 100, (width/2)+100, (height/2) +100);
             if(y > ((height/2)+100)){
                 setBotLineColor(0,255,0);
+                bottom = true;
             }
+
+            if(top & bottom){
+                setBallColor(0,255,0);
+            }
+
+
         }
 
         public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent rce) {
@@ -163,11 +174,6 @@ public class Test extends PApplet{
                     addY = (float) rce.getVoltageRatio()*height/(2) + 158;
                     //System.out.println(addY);
                 }
-
-                // Alters size by going left right.
-                /*if (rce.getSource().getChannel()==2) {
-                    size = (float) rce.getVoltageRatio()*100;
-                }*/
             } catch (PhidgetException e) {
                 System.out.println(e.toString());
             }
@@ -200,6 +206,10 @@ public class Test extends PApplet{
         float y;
         float d;
 
+        int r = 0;
+        int g = 191;
+        int b = 255;
+
         public Rotation(){
             this.x = width/2;
             this.y = height/2;
@@ -208,35 +218,36 @@ public class Test extends PApplet{
 
         void draw(){
 
-            // show full circles
+            // Outer circle
             ellipseMode(CENTER);
-            fill(255, 0, 0, 50);
-            ellipse(x, y, d, d);//yellow1
+            stroke(r,g,b);
+            fill(r, g, b, 50);
+            ellipse(x, y, d, d);
 
             showArcs();
 
+            // Inner circle
+            stroke(r,g,b);
             fill(backgroundR, backgroundG, backgroundB);
-            ellipse(x, y, d-30, d-30);//green1
-
-
+            ellipse(x, y, d-30, d-30);
 
         }
+
         @Override
         public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent lol) {
             //Add to progress
             float input = (float) (lol.getVoltageRatio());
-            float progress =  (float) ((input-0.0)/(0.999 - 0.0) * (130-0) + 0);
+            progress =  (float) ((input-0.0)/(0.999 - 0.0) * (135) + 0);
+            System.out.println(progress);
         }
 
         void showArcs() {
-
-            fill(255, 0, 0, 200);  // !!!!!!!!!!!!!!!!!!!!!!!!!
-            arc(x, y, d, d, PI+HALF_PI, map(progress, 0, 100, PI+HALF_PI, PI+HALF_PI+PI+HALF_PI));//yellow  !!!!!!!!!!!!!!!
-
-
-            fill(14, 18, 30);
-            arc(x, y, d-90, d-90, 0, TWO_PI);//center
+            stroke(r,g,b);
+            fill(r, g, b, 200);
+            arc(x, y, d, d, PI+HALF_PI, map(progress, 0, 100, PI+HALF_PI, PI+HALF_PI+PI+HALF_PI));
         }
+
+
     }
 }
 
