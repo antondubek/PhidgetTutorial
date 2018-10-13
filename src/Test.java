@@ -15,14 +15,14 @@ public class Test extends PApplet{
     RCServo servo;
 
 
-    Ball myBall = new Ball(20,20);
+    Ball myBall = new Ball(0,0);
     Ball redBall = new Ball(100,100);
 
 
     public void settings(){
-        size(400,400);
+        size(600,600);
 
-        redBall.setColor(255,0,0);
+        redBall.setBallColor(255,0,0);
 
         try {
             chRota = new VoltageRatioInput();
@@ -98,7 +98,7 @@ public class Test extends PApplet{
         // Point B */
 
         myBall.draw();
-        redBall.draw();
+        //redBall.draw();
 
         boolean state = false;
 
@@ -109,7 +109,7 @@ public class Test extends PApplet{
         }
 
         if(state){
-            myBall.setColor(0,255,0);
+            myBall.setBallColor(0,255,0);
         }
 
 
@@ -122,9 +122,18 @@ public class Test extends PApplet{
         float addY = 0;
         float size = 10;
 
-        int r = 0;
-        int g = 0;
-        int b = 0;
+        int ballR = 0;
+        int ballG = 0;
+        int ballB = 0;
+
+        int topLineR = 0;
+        int topLineG = 0;
+        int topLineB = 0;
+
+        int botLineR = 0;
+        int botLineG = 0;
+        int botLineB = 0;
+
 
         Ball(float x, float y) {
             this.posX = x;
@@ -132,10 +141,25 @@ public class Test extends PApplet{
         }
 
         void draw() {
-            fill(r,g,b);
+            strokeWeight(2);
+            stroke(0,0,0);
+            fill(ballR, ballG, ballB);
             float x = posX+addX;
             float y = posY+addY;
             ellipse(x, y, size, size);
+
+            strokeWeight(4);
+            stroke(topLineR, topLineG, topLineB);
+            line((width/2) - 100, (height/2) - 100, (width/2)+100, (height/2) -100);
+            if(y < ((height/2)-100)){
+                setTopLineColor(0,255,0);
+            }
+
+            stroke(botLineR, botLineG, botLineB);
+            line((width/2) - 100, (height/2) + 100, (width/2)+100, (height/2) +100);
+            if(y > ((height/2)+100)){
+                setBotLineColor(0,255,0);
+            }
         }
 
         public void setSensorValues(float x, float y, float s) {
@@ -147,10 +171,12 @@ public class Test extends PApplet{
         public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent rce) {
             try {
                 if (rce.getSource().getChannel()==0) {
-                    addX = (float) rce.getVoltageRatio()*width/(4);
+                    addX = (float) (rce.getVoltageRatio()*width/(2)) + 77;
+                    //System.out.println(addX);
                 }
                 if (rce.getSource().getChannel()==1) {
-                    addY = (float) rce.getVoltageRatio()*height/(4);
+                    addY = (float) rce.getVoltageRatio()*height/(2) + 158;
+                    //System.out.println(addY);
                 }
                 if (rce.getSource().getChannel()==2) {
                     size = (float) rce.getVoltageRatio()*100;
@@ -160,10 +186,22 @@ public class Test extends PApplet{
             }
         }
 
-        void setColor(int r, int g, int b) {
-            this.r = r;
-            this.g = g;
-            this.b = b;
+        void setBallColor(int r, int g, int b) {
+            this.ballR = r;
+            this.ballG = g;
+            this.ballB = b;
+        }
+
+        void setTopLineColor(int r, int g, int b){
+            this.topLineR = r;
+            this.topLineG = g;
+            this.topLineB = b;
+        }
+
+        void setBotLineColor(int r, int g, int b){
+            this.botLineR = r;
+            this.botLineG = g;
+            this.botLineB = b;
         }
     }
 }
