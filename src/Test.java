@@ -2,6 +2,11 @@ import com.phidget22.*;
 import processing.core.PApplet;
 
 public class Test extends PApplet{
+
+    int height = 600;
+    int width = 600;
+
+
     public static void main(String[] args) {
         PApplet.main("Test");
 
@@ -25,7 +30,7 @@ public class Test extends PApplet{
 
 
     public void settings(){
-        size(600,600);
+        size(width,height);
 
         // Makes things look nicer with some Anti-Aliasing
         smooth();
@@ -210,26 +215,52 @@ public class Test extends PApplet{
         int g = 191;
         int b = 255;
 
+        int innerR = 0;
+        int innerG = 191;
+        int innerB = 255;
+
+        int outerR = 0;
+        int outerG = 191;
+        int outerB = 255;
+
+        boolean lower = false;
+        boolean upper = false;
+
         public Rotation(){
-            this.x = width/2;
-            this.y = height/2;
-            this.d = (float) (width * 0.8);
+            this.x = width/6;
+            this.y = height/6;
+            this.d = (float) (width * 0.2);
         }
 
         void draw(){
 
             // Outer circle
             ellipseMode(CENTER);
-            stroke(r,g,b);
+            stroke(outerR,outerG,outerB);
             fill(r, g, b, 50);
             ellipse(x, y, d, d);
 
             showArcs();
 
             // Inner circle
-            stroke(r,g,b);
+            stroke(innerR,innerG,innerB);
             fill(backgroundR, backgroundG, backgroundB);
             ellipse(x, y, d-30, d-30);
+
+            if(progress < 0.5){
+                setInner(0,255,0);
+                lower = true;
+            }
+
+            if(progress > 134){
+                setOuter(0,255,0);
+                upper = true;
+            }
+
+            if(lower && upper){
+                setArc(0,255,0);
+            }
+
 
         }
 
@@ -238,13 +269,30 @@ public class Test extends PApplet{
             //Add to progress
             float input = (float) (lol.getVoltageRatio());
             progress =  (float) ((input-0.0)/(0.999 - 0.0) * (135) + 0);
-            System.out.println(progress);
         }
 
         void showArcs() {
             stroke(r,g,b);
             fill(r, g, b, 200);
             arc(x, y, d, d, PI+HALF_PI, map(progress, 0, 100, PI+HALF_PI, PI+HALF_PI+PI+HALF_PI));
+        }
+
+        void setOuter(int r, int g, int b){
+            this.outerR = r;
+            this.outerG = g;
+            this.outerB = b;
+        }
+
+        void setInner(int r, int g, int b){
+            this.innerR = r;
+            this.innerG = g;
+            this.innerB = b;
+        }
+
+        void setArc(int r, int g, int b){
+            this.r = r;
+            this.g = g;
+            this.b = b;
         }
 
 
