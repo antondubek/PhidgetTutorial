@@ -15,14 +15,11 @@ public class Test extends PApplet{
     RCServo servo;
 
 
-    Ball myBall = new Ball(0,0);
-    Ball redBall = new Ball(100,100);
+    Ministick myBall = new Ministick(0,0);
 
 
     public void settings(){
         size(600,600);
-
-        redBall.setBallColor(255,0,0);
 
         try {
             chRota = new VoltageRatioInput();
@@ -58,10 +55,6 @@ public class Test extends PApplet{
             chRota.addVoltageRatioChangeListener(myBall);
             chLin1.addVoltageRatioChangeListener(myBall);
             chLin2.addVoltageRatioChangeListener(myBall);
-
-            chRota.addVoltageRatioChangeListener(redBall);
-            chLin1.addVoltageRatioChangeListener(redBall);
-            chLin2.addVoltageRatioChangeListener(redBall);
 
             redLED.setState(true);
             servo.setTargetPosition(0);
@@ -115,7 +108,7 @@ public class Test extends PApplet{
 
     }
 
-    class Ball implements VoltageRatioInputVoltageRatioChangeListener {
+    class Ministick implements VoltageRatioInputVoltageRatioChangeListener {
         float posX = 0;
         float posY = 0;
         float addX = 0;
@@ -135,12 +128,13 @@ public class Test extends PApplet{
         int botLineB = 0;
 
 
-        Ball(float x, float y) {
+        Ministick(float x, float y) {
             this.posX = x;
             this.posY = y;
         }
 
         void draw() {
+            //Draw ball where the joystick is
             strokeWeight(2);
             stroke(0,0,0);
             fill(ballR, ballG, ballB);
@@ -148,6 +142,7 @@ public class Test extends PApplet{
             float y = posY+addY;
             ellipse(x, y, size, size);
 
+            // Draw top line and update to green if over
             strokeWeight(4);
             stroke(topLineR, topLineG, topLineB);
             line((width/2) - 100, (height/2) - 100, (width/2)+100, (height/2) -100);
@@ -155,6 +150,7 @@ public class Test extends PApplet{
                 setTopLineColor(0,255,0);
             }
 
+            // Draw bottom line and update to green if below
             stroke(botLineR, botLineG, botLineB);
             line((width/2) - 100, (height/2) + 100, (width/2)+100, (height/2) +100);
             if(y > ((height/2)+100)){
@@ -162,11 +158,11 @@ public class Test extends PApplet{
             }
         }
 
-        public void setSensorValues(float x, float y, float s) {
+        /*public void setSensorValues(float x, float y, float s) {
             this.addX = x;
             this.addY = y;
             this.size = s;
-        }
+        }*/
 
         public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent rce) {
             try {
