@@ -5,6 +5,8 @@ import processing.core.PApplet;
 class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeListener {
 
     private PApplet p;
+    private Game game;
+    private boolean solved;
 
     private float progress = 9;
 
@@ -12,22 +14,20 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
     private float y;
     private float d;
 
-    private int r = 0;
-    private int g = 191;
-    private int b = 255;
+    private int r = 255;
+    private int g = 0;
+    private int b = 128;
 
-    private int innerR = 0;
-    private int innerG = 191;
-    private int innerB = 255;
+    private int innerR = 255;
+    private int innerG = 0;
+    private int innerB = 128;
 
-    private int outerR = 0;
-    private int outerG = 191;
-    private int outerB = 255;
+    private int outerR = 255;
+    private int outerG = 0;
+    private int outerB = 128;
 
     private boolean lower = false;
     private boolean upper = false;
-
-    private Game game;
 
 
     public Rotation(PApplet p, Game game){
@@ -65,6 +65,7 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
 
         if(lower && upper){
             setArc(0,255,0);
+            solved = true;
         }
 
     }
@@ -73,7 +74,7 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
     public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent lol) {
         //Add to progress
         float input = (float) (lol.getVoltageRatio());
-        progress =  (float) ((input-0.0)/(0.999 - 0.0) * (135) + 0);
+        progress =  (float) ((input-0.0)/(0.999 - 0.0) * (140) + 0);
     }
 
     private void showArcs() {
@@ -100,5 +101,7 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
         this.b = b;
     }
 
-
+    public boolean isSolved() {
+        return solved;
+    }
 }

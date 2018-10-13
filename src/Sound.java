@@ -6,6 +6,7 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
 
     private PApplet p;
     private Game game;
+    private boolean solved = false;
 
     private int maxStacks = 20;
     private int counter = 1;
@@ -22,6 +23,7 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
 
     public void draw(){
         p.noStroke();
+        p.rectMode(CENTER);
 
         if(counter <= maxStacks) {
             for (float i = 1; i < counter; i++) {
@@ -37,14 +39,23 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
 
                 //Debug this to only produce 1 incrmenent not 300
                 this.display++;
+                solved = true;
             }
         }
+    }
+
+    public boolean isSolved() {
+        return solved;
     }
 
     @Override
     public void onVoltageChange(VoltageInputVoltageChangeEvent event) {
         double input = event.getVoltage() * 1000;
-        counter =  (int) (1 + (input - 60)*(20-1)/(400-60));
 
+        // USE FOR REAL THING
+        //counter =  (int) (1 + (input - 60)*(20-1)/(400-60));
+
+        // USE FOR LATE NIGHT TESTING
+        counter =  (int) (1 + (input - 60)*(20-1)/(200-60));
     }
 }

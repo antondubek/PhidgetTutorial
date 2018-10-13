@@ -6,6 +6,8 @@ import processing.core.PApplet;
 class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeListener {
 
     private PApplet p;
+    private Game game;
+    private boolean solved = false;
 
     private float posX = 0;
     private float posY = 0;
@@ -30,7 +32,7 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
 
     private int height;
     private int width;
-    private Game game;
+
 
 
     Ministick(PApplet p, Game game, float x, float y) {
@@ -71,6 +73,7 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
 
         if(top & bottom){
             setBallColor(0,255,0);
+            solved = true;
         }
 
 
@@ -108,5 +111,9 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
         this.botLineR = r;
         this.botLineG = g;
         this.botLineB = b;
+    }
+
+    public boolean isSolved() {
+        return solved;
     }
 }

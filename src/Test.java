@@ -1,5 +1,6 @@
 import com.phidget22.*;
 import processing.core.PApplet;
+import processing.core.PFont;
 
 public class Test extends PApplet{
 
@@ -17,16 +18,21 @@ public class Test extends PApplet{
 
     RCServo servo;
 
-
-    Game game = new Game(1800, 600, 51,51,51);
+    Game game = new Game(this,1800, 600, 51,51,51);
 
     Ministick myBall = new Ministick(this, game,0,0);
     Rotation myArc = new Rotation(this, game);
     Click myClick = new Click(this, game);
     Sound mySound = new Sound(this, game);
 
+    int stopWatchStart;
+    int stopWatchFinish = 0;
+
+    private PFont myFont;
+
 
     public void settings(){
+
         size(game.getWidth(),game.getHeight());
 
         int phidgetNo = 274077;
@@ -88,18 +94,49 @@ public class Test extends PApplet{
             System.out.println(e);
         }
 
-
+        System.out.println("GO");
+        stopWatchStart = millis();
 
     }
 
     public void draw() {
         background(game.getBackgroundR(), game.getBackgroundG(), game.getBackgroundB());
 
+        game.draw();
         myBall.draw();
         myArc.draw();
         myClick.draw();
         mySound.draw();
 
+        myFont = createFont("Lobster_1.3.otf", 40);
+        fill(255,255,255);
+        stroke(255,255,255);
+        textSize(50);
+        textFont(myFont);
+        text("Welcome to PhidgIT", width/2, height/10);
+        textAlign(CENTER, TOP);
+
+        textSize(32);
+        textAlign(CENTER, CENTER);
+
+        int width = game.getWidth();
+        int height = game.getHeight();
+
+        if(myBall.isSolved() && myArc.isSolved() && mySound.isSolved() && myClick.isSolved() && stopWatchFinish ==0){
+            stopWatchFinish = millis();
+            String displayText = ("COMPLETED in " + ((stopWatchFinish - stopWatchStart)/1000.0) + " seconds.");
+            text(displayText, width/2, (height/10) * 9);
+            System.out.println("Solved in "+ (stopWatchFinish - stopWatchStart)/1000.0);
+            noLoop();
+        } else if (myBall.isSolved() && myArc.isSolved() && myClick.isSolved()){
+            text("Clap IT", (width/5) * 4, (height/10) * 8);
+        } else if (myBall.isSolved() && myArc.isSolved()){
+            text("Click IT", (width/5) * 3, (height/10) * 8);
+        } else if (myBall.isSolved()){
+            text("Twist IT", (width/5) * 2, (height/10) * 8);
+        } else {
+            text("Flick IT", width/5, (height/10) * 8);
+        }
 
     }
 

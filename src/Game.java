@@ -1,4 +1,8 @@
-public class Game {
+import processing.core.PApplet;
+import processing.core.PFont;
+
+public class Game extends PApplet {
+    private PApplet p;
 
     private int backgroundR;
     private int backgroundG;
@@ -7,12 +11,18 @@ public class Game {
     private int width;
 
 
-    public Game(int width, int height, int backgroundR, int backgroundG, int backgroundB) {
+
+    public Game(PApplet p, int width, int height, int backgroundR, int backgroundG, int backgroundB) {
+        this.p = p;
         this.backgroundR = backgroundR;
         this.backgroundG = backgroundG;
         this.backgroundB = backgroundB;
         this.height = height;
         this.width = width;
+    }
+
+    public void draw(){
+
     }
 
     public int getBackgroundR() {
