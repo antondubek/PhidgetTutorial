@@ -17,8 +17,8 @@ public class Test extends PApplet{
 
     Game game = new Game(600, 600, 51,51,51);
 
-    Ministick myBall = new Ministick(this,0,0);
-    Rotation myArc = new Rotation(this);
+    Ministick myBall = new Ministick(this, game,0,0);
+    Rotation myArc = new Rotation(this, game);
 
 
     public void settings(){
@@ -90,10 +90,6 @@ public class Test extends PApplet{
             state = click.getState();
         } catch (Exception e){
             println(e.toString());
-        }
-
-        if(state){
-            myBall.setBallColor(0,255,0);
         }
 
 

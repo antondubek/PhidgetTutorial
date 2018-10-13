@@ -1,10 +1,10 @@
 public class Game {
 
-    public static int backgroundR;
-    public static int backgroundG;
-    public static int backgroundB;
-    public static int height;
-    public static int width;
+    private int backgroundR;
+    private int backgroundG;
+    private int backgroundB;
+    private int height;
+    private int width;
 
 
     public Game(int width, int height, int backgroundR, int backgroundG, int backgroundB) {
@@ -15,23 +15,23 @@ public class Game {
         this.width = width;
     }
 
-    public static int getBackgroundR() {
+    public int getBackgroundR() {
         return backgroundR;
     }
 
-    public static int getBackgroundG() {
+    public int getBackgroundG() {
         return backgroundG;
     }
 
-    public static int getBackgroundB() {
+    public int getBackgroundB() {
         return backgroundB;
     }
 
-    public static int getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public static int getWidth() {
+    public int getWidth() {
         return width;
     }
 }

@@ -30,14 +30,16 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
 
     private int height;
     private int width;
+    private Game game;
 
 
-    Ministick(PApplet p, float x, float y) {
+    Ministick(PApplet p, Game game, float x, float y) {
         this.p = p;
+        this.game = game;
         this.posX = x;
         this.posY = y;
-        this.height = Game.getHeight();
-        this.width = Game.getWidth();
+        this.height = game.getHeight();
+        this.width = game.getWidth();
     }
 
     public void draw() {
@@ -90,19 +92,19 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
         }
     }
 
-    void setBallColor(int r, int g, int b) {
+    private void setBallColor(int r, int g, int b) {
         this.ballR = r;
         this.ballG = g;
         this.ballB = b;
     }
 
-    void setTopLineColor(int r, int g, int b){
+    private void setTopLineColor(int r, int g, int b){
         this.topLineR = r;
         this.topLineG = g;
         this.topLineB = b;
     }
 
-    void setBotLineColor(int r, int g, int b){
+    private void setBotLineColor(int r, int g, int b){
         this.botLineR = r;
         this.botLineG = g;
         this.botLineB = b;
