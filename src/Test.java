@@ -167,7 +167,8 @@ public class Test extends PApplet{
         public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent rce) {
             try {
                 if (rce.getSource().getChannel()==0) {
-                    addX = (float) (rce.getVoltageRatio()*width/(2)) + 77;
+                    addX = (float) (rce.getVoltageRatio()*width/(2));
+                    addX += (width/2) - addX;
                     //System.out.println(addX);
                 }
                 if (rce.getSource().getChannel()==1) {
