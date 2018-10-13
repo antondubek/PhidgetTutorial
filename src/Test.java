@@ -3,10 +3,6 @@ import processing.core.PApplet;
 
 public class Test extends PApplet{
 
-    int height = 600;
-    int width = 600;
-
-
     public static void main(String[] args) {
         PApplet.main("Test");
 
@@ -19,14 +15,15 @@ public class Test extends PApplet{
     DigitalInput click;
     RCServo servo;
 
+    public int backgroundR = 51;
+    public int backgroundG = 51;
+    public int backgroundB = 51;
+
+    int height = 600;
+    int width = 600;
 
     Ministick myBall = new Ministick(0,0);
-    Rotation myArc = new Rotation();
-
-    int backgroundR = 51;
-    int backgroundG = 51;
-    int backgroundB = 51;
-
+    Rotation myArc = new Rotation(this, height, width, backgroundR, backgroundG, backgroundB);
 
 
     public void settings(){
@@ -201,101 +198,6 @@ public class Test extends PApplet{
             this.botLineG = g;
             this.botLineB = b;
         }
-    }
-
-
-    class Rotation implements VoltageRatioInputVoltageRatioChangeListener {
-        float progress = 9;
-
-        float x;
-        float y;
-        float d;
-
-        int r = 0;
-        int g = 191;
-        int b = 255;
-
-        int innerR = 0;
-        int innerG = 191;
-        int innerB = 255;
-
-        int outerR = 0;
-        int outerG = 191;
-        int outerB = 255;
-
-        boolean lower = false;
-        boolean upper = false;
-
-        public Rotation(){
-            this.x = width/6;
-            this.y = height/6;
-            this.d = (float) (width * 0.2);
-        }
-
-        void draw(){
-
-            // Outer circle
-            ellipseMode(CENTER);
-            stroke(outerR,outerG,outerB);
-            fill(r, g, b, 50);
-            ellipse(x, y, d, d);
-
-            showArcs();
-
-            // Inner circle
-            stroke(innerR,innerG,innerB);
-            fill(backgroundR, backgroundG, backgroundB);
-            ellipse(x, y, d-30, d-30);
-
-            if(progress < 0.5){
-                setInner(0,255,0);
-                lower = true;
-            }
-
-            if(progress > 134){
-                setOuter(0,255,0);
-                upper = true;
-            }
-
-            if(lower && upper){
-                setArc(0,255,0);
-            }
-
-
-        }
-
-        @Override
-        public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent lol) {
-            //Add to progress
-            float input = (float) (lol.getVoltageRatio());
-            progress =  (float) ((input-0.0)/(0.999 - 0.0) * (135) + 0);
-        }
-
-        void showArcs() {
-            stroke(r,g,b);
-            fill(r, g, b, 200);
-            arc(x, y, d, d, PI+HALF_PI, map(progress, 0, 100, PI+HALF_PI, PI+HALF_PI+PI+HALF_PI));
-        }
-
-        void setOuter(int r, int g, int b){
-            this.outerR = r;
-            this.outerG = g;
-            this.outerB = b;
-        }
-
-        void setInner(int r, int g, int b){
-            this.innerR = r;
-            this.innerG = g;
-            this.innerB = b;
-        }
-
-        void setArc(int r, int g, int b){
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-
-
     }
 }
 
