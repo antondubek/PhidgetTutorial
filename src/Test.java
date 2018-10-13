@@ -15,19 +15,14 @@ public class Test extends PApplet{
     DigitalInput click;
     RCServo servo;
 
-    public int backgroundR = 51;
-    public int backgroundG = 51;
-    public int backgroundB = 51;
+    Game game = new Game(600, 600, 51,51,51);
 
-    int height = 600;
-    int width = 600;
-
-    Ministick myBall = new Ministick(0,0);
-    Rotation myArc = new Rotation(this, height, width, backgroundR, backgroundG, backgroundB);
+    Ministick myBall = new Ministick(this,0,0);
+    Rotation myArc = new Rotation(this);
 
 
     public void settings(){
-        size(width,height);
+        size(game.getWidth(),game.getHeight());
 
         // Makes things look nicer with some Anti-Aliasing
         smooth();
@@ -84,7 +79,7 @@ public class Test extends PApplet{
     }
 
     public void draw() {
-        background(backgroundR, backgroundG, backgroundB);
+        background(game.getBackgroundR(), game.getBackgroundG(), game.getBackgroundB());
 
         myBall.draw();
         myArc.draw();
@@ -104,101 +99,6 @@ public class Test extends PApplet{
 
     }
 
-    class Ministick implements VoltageRatioInputVoltageRatioChangeListener {
-        float posX = 0;
-        float posY = 0;
-        float addX = 0;
-        float addY = 0;
-        float size = 10;
-
-        int ballR = 0;
-        int ballG = 191;
-        int ballB = 255;
-
-        int topLineR = 0;
-        int topLineG = 191;
-        int topLineB = 255;
-
-        int botLineR = 0;
-        int botLineG = 191;
-        int botLineB = 255;
-
-        boolean top = false;
-        boolean bottom = false;
-
-
-        Ministick(float x, float y) {
-            this.posX = x;
-            this.posY = y;
-        }
-
-        void draw() {
-            //Draw ball where the joystick is
-            strokeWeight(2);
-            stroke(0,0,0);
-            fill(ballR, ballG, ballB);
-            float x = posX+addX;
-            float y = posY+addY;
-            ellipse(x, y, size, size);
-
-            // Draw top line and update to green if over
-            strokeWeight(4);
-            stroke(topLineR, topLineG, topLineB);
-            line((width/2) - 100, (height/2) - 100, (width/2)+100, (height/2) -100);
-            if(y < ((height/2)-100)){
-                setTopLineColor(0,255,0);
-                top = true;
-            }
-
-            // Draw bottom line and update to green if below
-            stroke(botLineR, botLineG, botLineB);
-            line((width/2) - 100, (height/2) + 100, (width/2)+100, (height/2) +100);
-            if(y > ((height/2)+100)){
-                setBotLineColor(0,255,0);
-                bottom = true;
-            }
-
-            if(top & bottom){
-                setBallColor(0,255,0);
-            }
-
-
-        }
-
-        public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent rce) {
-            try {
-                if (rce.getSource().getChannel()==1) {
-                    addX = (float) (rce.getVoltageRatio()*width/(2));
-                    addX += (width/2) - addX;
-                    //System.out.println(addX);
-                }
-                if (rce.getSource().getChannel()==2) {
-                    addY = (float) rce.getVoltageRatio()*height/(2) + 158;
-                    //System.out.println(addY);
-                }
-            } catch (PhidgetException e) {
-                System.out.println(e.toString());
-            }
-        }
-
-        void setBallColor(int r, int g, int b) {
-            this.ballR = r;
-            this.ballG = g;
-            this.ballB = b;
-        }
-
-        void setTopLineColor(int r, int g, int b){
-            this.topLineR = r;
-            this.topLineG = g;
-            this.topLineB = b;
-        }
-
-        void setBotLineColor(int r, int g, int b){
-            this.botLineR = r;
-            this.botLineG = g;
-            this.botLineB = b;
-        }
-    }
 }
 
 

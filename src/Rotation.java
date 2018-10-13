@@ -27,23 +27,12 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
     private boolean lower = false;
     private boolean upper = false;
 
-    private int backgroundR;
-    private int backgroundG;
-    private int backgroundB;
-    private int height;
-    private int width;
 
-    public Rotation(PApplet p, int width, int height, int backgroundR, int backgroundG, int backgroundB){
+    public Rotation(PApplet p){
         this.p = p;
-        this.width = width;
-        this.height = height;
-        this.x = width/6;
-        this.y = height/6;
-        this.d = (float) (width * 0.2);
-        this.backgroundR = backgroundR;
-        this.backgroundG = backgroundG;
-        this.backgroundB = backgroundB;
-
+        this.x = Game.getWidth()/6;
+        this.y = Game.getHeight()/6;
+        this.d = (float) (Game.getWidth() * 0.2);
     }
 
     public void draw(){
@@ -58,7 +47,7 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
 
         // Inner circle
         p.stroke(innerR,innerG,innerB);
-        p.fill(backgroundR, backgroundG, backgroundB);
+        p.fill(Game.getBackgroundR(), Game.getBackgroundG(), Game.getBackgroundB());
         p.ellipse(x, y, d-30, d-30);
 
         if(progress < 0.5){
