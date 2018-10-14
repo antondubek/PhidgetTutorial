@@ -26,7 +26,7 @@ public class Test extends PApplet{
     RCServo servo;
 
     // Creation of Output objects
-    Game game = new Game(this,1800, 600, 51,51,51);
+    Game game = new Game(this,1260, 720, 51,51,51);
     Ministick myBall = new Ministick(this, game,0,0);
     Rotation myArc = new Rotation(this, game);
     Click myClick = new Click(this, game);
