@@ -71,8 +71,8 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
         double input = event.getVoltage() * 1000;
 
         // USE FOR REAL THING
-        System.out.println(input);
-        counter =  (int) (1 + (input - 60)*(20-3)/(400-60));
+        //System.out.println(input);
+        counter =  (int) (1 + (input - 60)*(20-3)/(350-60));
 
         // USE FOR LATE NIGHT TESTING
         //counter =  (int) (1 + (input - 60)*(20-3)/(200-60));

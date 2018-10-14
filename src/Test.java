@@ -5,6 +5,8 @@ import processing.data.Table;
 import processing.data.TableRow;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Test extends PApplet{
 
@@ -24,7 +26,7 @@ public class Test extends PApplet{
     RCServo servo;
 
     // Creation of Output objects
-    Game game = new Game(this,1260, 720, 51,51,51);
+    Game game = new Game(this,1800, 600, 51,51,51);
     Ministick myBall = new Ministick(this, game,0,0);
     Rotation myArc = new Rotation(this, game);
     Click myClick = new Click(this, game);
@@ -42,6 +44,10 @@ public class Test extends PApplet{
 
     // State Initialisation
     int gameState = 1;
+
+    ArrayList<Integer> myArrayList = new ArrayList<Integer>();
+
+    public ArrayList<Integer> getMyArrayList = new ArrayList<Integer>();
 
     // Leaderboard Initialisation
     char[] letters = new char[4]; // 4 letters
@@ -123,6 +129,10 @@ public class Test extends PApplet{
             System.out.println(e);
         }
 
+        myArrayList.add(2);
+        myArrayList.add(3);
+        myArrayList.add(4);
+        myArrayList.add(5);
 
         // Leaderboard setup
         // letters for Input
@@ -173,6 +183,10 @@ public class Test extends PApplet{
 
         text(goText, width/2, (height/10) * 9);
 
+        //if(myBall.isSolved() && myArc.isSolved() && mySound.isSolved() && myClick.isSolved()){
+        //    gameState = 6;
+        //}
+
         if(gameState == 1){
             printTopText();
             goText = "Cover Sensor to Start";
@@ -180,41 +194,42 @@ public class Test extends PApplet{
                 goText = "GO!!!";
                 timeOn = true;
                 this.time = System.currentTimeMillis();
-                gameState = 2;
+                randomState();
             }
         } else if(gameState == 2){
+
             printTopText();
             myBall.draw();
             goText = getTime();
             if(myBall.isSolved()){
-                gameState = 3;
+                myBall.newGame();
+                randomState();
             }
         } else if(gameState == 3){
+
             printTopText();
             myArc.draw();
             goText = getTime();
-            myBall.draw();
             if(myArc.isSolved()){
-                gameState = 4;
+                myArc.newGame();
+                randomState();
             }
         } else if(gameState == 4){
+
             printTopText();
             myClick.draw();
             goText = getTime();
-            myBall.draw();
-            myArc.draw();
             if(myClick.isSolved()){
-                gameState = 5;
+                myClick.newGame();
+                randomState();
             }
         } else if(gameState == 5){
             printTopText();
             mySound.draw();
-            myBall.draw();
-            myArc.draw();
-            myClick.draw();
             goText = getTime();
             if(mySound.isSolved()){
-                gameState = 6;
+                mySound.newGame();
+                randomState();
             }
         } else if(gameState == 6){
             timeOn = false;
@@ -278,16 +293,23 @@ public class Test extends PApplet{
         }
 
         else if(gameState == 11){
-            mySound.newGame();
-            myBall.newGame();
-            myArc.newGame();
-            myClick.newGame();
             newGame();
         }
 
 
 
     }
+
+    public void randomState(){
+        if(myArrayList.size() == 0){
+            gameState = 6;
+        } else {
+            int randomNumber = ThreadLocalRandom.current().nextInt(0, myArrayList.size());
+            gameState = myArrayList.get(randomNumber);
+            myArrayList.remove(randomNumber);
+        }
+    }
+
 
     public void printHighscores(){
         fill(0, 191, 255);
@@ -432,7 +454,6 @@ public class Test extends PApplet{
             //If the score is lower than the top 5
 
             if ((score < newRow.getInt("savedata"))) {
-                System.out.println(true);
                 return true; // high enough
             }
         }
@@ -449,6 +470,11 @@ public class Test extends PApplet{
         timeOn = false;
         time = 0;
         completedIn = 0;
+
+        myArrayList.add(2);
+        myArrayList.add(3);
+        myArrayList.add(4);
+        myArrayList.add(5);
 
         // State Initialisation
         gameState = 1;
