@@ -2,6 +2,8 @@ import com.phidget22.VoltageInputVoltageChangeEvent;
 import com.phidget22.VoltageInputVoltageChangeListener;
 import processing.core.PApplet;
 
+import java.util.concurrent.TimeUnit;
+
 public class Sound extends PApplet implements VoltageInputVoltageChangeListener {
 
     private PApplet p;
@@ -10,7 +12,7 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
 
     private int maxStacks = 20;
     private int counter = 1;
-    private int display = 0;
+    private int display = 10;
 
     private int textR = 255;
     private int textG = 255;
@@ -29,12 +31,14 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
     public void draw(){
         p.fill(textR,textG,textB);
         p.stroke(textR, textG,textB);
-        p.text("Clap IT", (width/5) * 4, (height/10) * 8);
+        String toDisplay = "Clap IT (" + display+")";
+        p.text(toDisplay, (width/5) * 4, (height/10) * 8);
 
         p.noStroke();
         p.rectMode(CENTER);
 
         if(counter <= maxStacks && !isSolved()) {
+            setTextColor(255,255,255);
             for (float i = 1; i < counter; i++) {
 
                 p.fill(p.lerpColor(p.color(240,255,0), p.color(255,0,0), ((i)/counter)));
@@ -42,12 +46,17 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
 
             }
         } else {
+            setTextColor(0,255,0);
+            display--;
+            System.out.println(display);
+            try{TimeUnit.MILLISECONDS.sleep(300);} catch(Exception e){ System.out.println(e);};
+        }
+
+        if(display == 0) {
             for (int i = 1; i < maxStacks; i++) {
                 p.fill(0, 255, 0);
                 p.rect(((width)/5) * 4, ((height/2)+140) - (i * 15), 140, 10);
                 setTextColor(0,255,0);
-                //Debug this to only produce 1 incrmenent not 300
-                this.display++;
                 solved = true;
             }
         }
@@ -62,10 +71,10 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
         double input = event.getVoltage() * 1000;
 
         // USE FOR REAL THING
-        //counter =  (int) (1 + (input - 60)*(20-1)/(400-60));
+        counter =  (int) (1 + (input - 60)*(20-3)/(300-60));
 
         // USE FOR LATE NIGHT TESTING
-        counter =  (int) (1 + (input - 60)*(20-1)/(200-60));
+        //counter =  (int) (1 + (input - 60)*(20-3)/(200-60));
     }
 
     private void setTextColor(int r, int g, int b){
