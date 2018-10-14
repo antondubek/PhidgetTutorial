@@ -25,7 +25,7 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
         p.noStroke();
         p.rectMode(CENTER);
 
-        if(counter <= maxStacks) {
+        if(counter <= maxStacks && !isSolved()) {
             for (float i = 1; i < counter; i++) {
 
                 p.fill(p.lerpColor(p.color(240,255,0), p.color(255,0,0), ((i)/counter)));
