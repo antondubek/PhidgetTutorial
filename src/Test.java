@@ -231,7 +231,13 @@ public class Test extends PApplet{
             textAlign(CENTER, CENTER);
             textSize(32);
             fill(255,255,255);
-            text("Press space to enter name, N for new game or Q to Quit", width/2, (height/10) * 8);
+
+            if(highEnoughForHighScore(getTimeInt())){
+                text("Press space to enter name, N for new game or Q to Quit", width/2, (height/10) * 8);
+            } else {
+                text("Score not high enough for top 5, press N for new game or Q to Quit", width/2, (height/10) * 8);
+            }
+
         }
         else if(gameState == 8){
             fill(255, 255, 255); // red = default
@@ -428,11 +434,10 @@ public class Test extends PApplet{
             if ((score < newRow.getInt("savedata"))) {
                 System.out.println(true);
                 return true; // high enough
-            }//if
-        }//for
-        System.out.println(false);
+            }
+        }
         return false; // NOT high enough
-    } //func
+    }
 
     public void printTopText(){
         textSize(50);
