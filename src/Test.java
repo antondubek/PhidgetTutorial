@@ -31,9 +31,12 @@ public class Test extends PApplet{
 
     boolean timeOn = false;
     long time;
+    long completedIn;
 
     private PFont myFont;
     private String goText = "Cover Sensor to Start";
+
+    int gameState = 1;
 
 
     public void settings(){
@@ -118,10 +121,6 @@ public class Test extends PApplet{
         background(game.getBackgroundR(), game.getBackgroundG(), game.getBackgroundB());
 
         game.draw();
-        myBall.draw();
-        myArc.draw();
-        myClick.draw();
-        mySound.draw();
 
         fill(255,255,255);
         stroke(255,255,255);
@@ -138,37 +137,62 @@ public class Test extends PApplet{
 
         text(goText, width/2, (height/10) * 9);
 
-        if(myLight.getSensorReading() < 10 && !timeOn){
-            goText = "GO!!!";
-            System.out.println("GO");
-            timeOn = true;
-            this.time = System.currentTimeMillis();
+        if(gameState == 1){
+            if(myLight.getSensorReading() < 10 && !timeOn){
+                goText = "GO!!!";
+                timeOn = true;
+                this.time = System.currentTimeMillis();
+                gameState = 2;
+            }
+        } else if(gameState == 2){
+            myBall.draw();
+            goText = getTime();
+            if(myBall.isSolved()){
+                gameState = 3;
+            }
+        } else if(gameState == 3){
+            myArc.draw();
+            goText = getTime();
+            myBall.draw();
+            if(myArc.isSolved()){
+                gameState = 4;
+            }
+        } else if(gameState == 4){
+            myClick.draw();
+            goText = getTime();
+            myBall.draw();
+            myArc.draw();
+            if(myClick.isSolved()){
+                gameState = 5;
+            }
+        } else if(gameState == 5){
+            mySound.draw();
+            myBall.draw();
+            myArc.draw();
+            myClick.draw();
+            goText = getTime();
+            if(mySound.isSolved()){
+                gameState = 6;
+            }
+        } else if(gameState == 6){
+            timeOn = false;
+            goText = "";
+
+            fill(255,255,255);
+            stroke(255,255,255);
+            textSize(50);
+            String newText = ("COMPLETED in " + getTime() + " seconds.");
+            text(newText, width/2, (height/2));
         }
 
-        if(myBall.isSolved() && myArc.isSolved() && mySound.isSolved() && myClick.isSolved() && timeOn){
-            timeOn = false;
-            goText = ("COMPLETED in " + getTime() + " seconds.");
-            text(goText, width/2, (height/10) * 9);
-            redraw();
-        } else if (myBall.isSolved() && myArc.isSolved() && myClick.isSolved() && timeOn){
-            text("Clap IT", (width/5) * 4, (height/10) * 8);
-            goText = getTime();
-        } else if (myBall.isSolved() && myArc.isSolved() && timeOn){
-            text("Click IT", (width/5) * 3, (height/10) * 8);
-            goText = getTime();
-        } else if (myBall.isSolved() && timeOn){
-            text("Twist IT", (width/5) * 2, (height/10) * 8);
-            goText = getTime();
-        } else if (!(myBall.isSolved()) && timeOn){
-            text("Flick IT", width/5, (height/10) * 8);
-            goText = getTime();
-        } else {
-            //noLoop();
-        }
+
+
     }
 
     public String getTime(){
-        long completedIn = System.currentTimeMillis() - time;
+        if(timeOn) {
+            completedIn = System.currentTimeMillis() - time;
+        }
         return (new SimpleDateFormat("ss:SSS")).format(completedIn);
     }
 

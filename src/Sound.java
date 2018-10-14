@@ -12,16 +12,25 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
     private int counter = 1;
     private int display = 0;
 
-    private int r = 0;
-    private int g = 191;
-    private int b = 255;
+    private int textR = 255;
+    private int textG = 255;
+    private int textB = 255;
+
+    private int height;
+    private int width;
 
     public Sound(PApplet p, Game game) {
         this.p = p;
         this.game = game;
+        this.height = game.getHeight();
+        this.width = game.getWidth();
     }
 
     public void draw(){
+        p.fill(textR,textG,textB);
+        p.stroke(textR, textG,textB);
+        p.text("Clap IT", (width/5) * 4, (height/10) * 8);
+
         p.noStroke();
         p.rectMode(CENTER);
 
@@ -29,14 +38,14 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
             for (float i = 1; i < counter; i++) {
 
                 p.fill(p.lerpColor(p.color(240,255,0), p.color(255,0,0), ((i)/counter)));
-                p.rect(((game.getWidth())/5) * 4, ((game.getHeight()/2)+140) - (i * 15), 140, 10);
+                p.rect(((width)/5) * 4, ((height/2)+140) - (i * 15), 140, 10);
 
             }
         } else {
             for (int i = 1; i < maxStacks; i++) {
                 p.fill(0, 255, 0);
-                p.rect(((game.getWidth())/5) * 4, ((game.getHeight()/2)+140) - (i * 15), 140, 10);
-
+                p.rect(((width)/5) * 4, ((height/2)+140) - (i * 15), 140, 10);
+                setTextColor(0,255,0);
                 //Debug this to only produce 1 incrmenent not 300
                 this.display++;
                 solved = true;
@@ -57,5 +66,11 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
 
         // USE FOR LATE NIGHT TESTING
         counter =  (int) (1 + (input - 60)*(20-1)/(200-60));
+    }
+
+    private void setTextColor(int r, int g, int b){
+        this.textR = r;
+        this.textG = g;
+        this.textB = b;
     }
 }

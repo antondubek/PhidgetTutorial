@@ -26,6 +26,10 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
     private int outerG = 0;
     private int outerB = 128;
 
+    private int textR = 255;
+    private int textG = 255;
+    private int textB = 255;
+
     private boolean lower = false;
     private boolean upper = false;
 
@@ -39,7 +43,9 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
     }
 
     public void draw(){
-
+        p.fill(textR,textG,textB);
+        p.stroke(textR, textG,textB);
+        p.text("Twist IT", (game.getWidth()/5) * 2, (game.getHeight()/10) * 8);
         // Outer circle
         p.ellipseMode(CENTER);
         p.stroke(outerR,outerG,outerB);
@@ -65,6 +71,7 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
 
         if(lower && upper){
             setArc(0,255,0);
+            setTextColor(0,255,0);
             solved = true;
         }
 
@@ -99,6 +106,12 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
         this.r = r;
         this.g = g;
         this.b = b;
+    }
+
+    private void setTextColor(int r, int g, int b){
+        this.textR = r;
+        this.textG = g;
+        this.textB = b;
     }
 
     public boolean isSolved() {

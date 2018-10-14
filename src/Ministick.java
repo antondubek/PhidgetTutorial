@@ -27,6 +27,10 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
     private int botLineG = 191;
     private int botLineB = 255;
 
+    private int textR = 255;
+    private int textG = 255;
+    private int textB = 255;
+
     private boolean top = false;
     private boolean bottom = false;
 
@@ -45,6 +49,9 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
     }
 
     public void draw() {
+        p.fill(textR,textG,textB);
+        p.stroke(textR, textG,textB);
+        p.text("Flick IT", width/5, (height/10) * 8);
 
         //Draw ball where the joystick is
         p.strokeWeight(2);
@@ -73,6 +80,7 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
 
         if(top & bottom){
             setBallColor(0,255,0);
+            setTextColor(0,255,0);
             solved = true;
         }
 
@@ -111,6 +119,12 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
         this.botLineR = r;
         this.botLineG = g;
         this.botLineB = b;
+    }
+
+    private void setTextColor(int r, int g, int b){
+        this.textR = r;
+        this.textG = g;
+        this.textB = b;
     }
 
     public boolean isSolved() {

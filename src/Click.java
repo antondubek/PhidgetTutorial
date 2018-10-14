@@ -16,26 +16,38 @@ public class Click extends PApplet implements DigitalInputStateChangeListener {
     private int g = 20;
     private int b = 246;
 
+    private int textR = 255;
+    private int textG = 255;
+    private int textB = 255;
+
+    private int width;
+    private int height;
+
     public Click(PApplet p, Game game) {
         this.p = p;
         this.game = game;
+        this.width = game.getWidth();
+        this.height = game.getHeight();
     }
 
     public void draw(){
+        p.fill(textR,textG,textB);
+        p.stroke(textR, textG,textB);
+        p.text("Click IT", (width/5) * 3, (height/10) * 8);
         p.noStroke();
         p.rectMode(CENTER);
 
         if(counter <= maxStacks) {
             for (int i = 1; i < counter; i++) {
                 p.fill(r, g, b);
-                p.rect(((game.getWidth())/5) * 3, ((game.getHeight()/2)+140) - (i * 15), 140, 10);
+                p.rect(((width)/5) * 3, ((height/2)+140) - (i * 15), 140, 10);
 
             }
         } else {
             for (int i = 1; i < maxStacks; i++) {
                 p.fill(0, 255, 0);
-                p.rect(((game.getWidth())/5) * 3, ((game.getHeight()/2)+140) - (i * 15), 140, 10);
-
+                p.rect(((width)/5) * 3, ((height/2)+140) - (i * 15), 140, 10);
+                setTextColor(0,255,0);
                 solved = true;
             }
         }
@@ -47,6 +59,12 @@ public class Click extends PApplet implements DigitalInputStateChangeListener {
         if(helper % 2 == 0){
             counter++;
         }
+    }
+
+    private void setTextColor(int r, int g, int b){
+        this.textR = r;
+        this.textG = g;
+        this.textB = b;
     }
 
     public boolean isSolved() {
