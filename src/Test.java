@@ -2,6 +2,8 @@ import com.phidget22.*;
 import processing.core.PApplet;
 import processing.core.PFont;
 
+import java.text.SimpleDateFormat;
+
 public class Test extends PApplet{
 
     public static void main(String[] args) {
@@ -15,6 +17,7 @@ public class Test extends PApplet{
     DigitalOutput redLED;
     DigitalInput click;
     VoltageInput sound;
+    VoltageRatioInput light;
 
     RCServo servo;
 
@@ -24,11 +27,13 @@ public class Test extends PApplet{
     Rotation myArc = new Rotation(this, game);
     Click myClick = new Click(this, game);
     Sound mySound = new Sound(this, game);
+    Light myLight = new Light(this, game);
 
-    int stopWatchStart;
-    int stopWatchFinish = 0;
+    boolean timeOn = false;
+    long time;
 
     private PFont myFont;
+    private String goText = "Cover Sensor to Start";
 
 
     public void settings(){
@@ -37,6 +42,8 @@ public class Test extends PApplet{
 
         int phidgetNo = 274077;
         int servoNo = 306007;
+
+
 
         // Makes things look nicer with some Anti-Aliasing
         smooth();
@@ -49,6 +56,7 @@ public class Test extends PApplet{
             servo = new RCServo();
             click = new DigitalInput();
             sound = new VoltageInput();
+            light = new VoltageRatioInput();
 
             chRota.setDeviceSerialNumber(phidgetNo);
             chLin1.setDeviceSerialNumber(phidgetNo);
@@ -57,6 +65,7 @@ public class Test extends PApplet{
             sound.setDeviceSerialNumber(phidgetNo);
             servo.setDeviceSerialNumber(servoNo);
             click.setDeviceSerialNumber(phidgetNo);
+            light.setDeviceSerialNumber(phidgetNo);
 
             chRota.setChannel(0);
             chLin1.setChannel(1);
@@ -65,6 +74,7 @@ public class Test extends PApplet{
             redLED.setChannel(0);
             servo.setChannel(0);
             click.setChannel(0);
+            light.setChannel(4);
 
             //chRota.setDataInterval(1);
 
@@ -75,12 +85,14 @@ public class Test extends PApplet{
             sound.open();
             servo.open(5000);
             click.open();
+            light.open();
 
             chRota.addVoltageRatioChangeListener(myArc);
             chLin1.addVoltageRatioChangeListener(myBall);
             chLin2.addVoltageRatioChangeListener(myBall);
             click.addStateChangeListener(myClick);
             sound.addVoltageChangeListener(mySound);
+            light.addVoltageRatioChangeListener(myLight);
 
             redLED.setState(true);
             servo.setTargetPosition(0);
@@ -94,9 +106,12 @@ public class Test extends PApplet{
             System.out.println(e);
         }
 
-        System.out.println("GO");
-        stopWatchStart = millis();
 
+
+    }
+
+    public void setup(){
+        myFont = createFont("Lobster_1.3.otf", 40);
     }
 
     public void draw() {
@@ -108,7 +123,6 @@ public class Test extends PApplet{
         myClick.draw();
         mySound.draw();
 
-        myFont = createFont("Lobster_1.3.otf", 40);
         fill(255,255,255);
         stroke(255,255,255);
         textSize(50);
@@ -122,22 +136,40 @@ public class Test extends PApplet{
         int width = game.getWidth();
         int height = game.getHeight();
 
-        if(myBall.isSolved() && myArc.isSolved() && mySound.isSolved() && myClick.isSolved() && stopWatchFinish ==0){
-            stopWatchFinish = millis();
-            String displayText = ("COMPLETED in " + ((stopWatchFinish - stopWatchStart)/1000.0) + " seconds.");
-            text(displayText, width/2, (height/10) * 9);
-            System.out.println("Solved in "+ (stopWatchFinish - stopWatchStart)/1000.0);
-            noLoop();
-        } else if (myBall.isSolved() && myArc.isSolved() && myClick.isSolved()){
-            text("Clap IT", (width/5) * 4, (height/10) * 8);
-        } else if (myBall.isSolved() && myArc.isSolved()){
-            text("Click IT", (width/5) * 3, (height/10) * 8);
-        } else if (myBall.isSolved()){
-            text("Twist IT", (width/5) * 2, (height/10) * 8);
-        } else {
-            text("Flick IT", width/5, (height/10) * 8);
+        text(goText, width/2, (height/10) * 9);
+
+        if(myLight.getSensorReading() < 10 && !timeOn){
+            goText = "GO!!!";
+            System.out.println("GO");
+            timeOn = true;
+            this.time = System.currentTimeMillis();
         }
 
+        if(myBall.isSolved() && myArc.isSolved() && mySound.isSolved() && myClick.isSolved() && timeOn){
+            timeOn = false;
+            goText = ("COMPLETED in " + getTime() + " seconds.");
+            text(goText, width/2, (height/10) * 9);
+            redraw();
+        } else if (myBall.isSolved() && myArc.isSolved() && myClick.isSolved() && timeOn){
+            text("Clap IT", (width/5) * 4, (height/10) * 8);
+            goText = getTime();
+        } else if (myBall.isSolved() && myArc.isSolved() && timeOn){
+            text("Click IT", (width/5) * 3, (height/10) * 8);
+            goText = getTime();
+        } else if (myBall.isSolved() && timeOn){
+            text("Twist IT", (width/5) * 2, (height/10) * 8);
+            goText = getTime();
+        } else if (!(myBall.isSolved()) && timeOn){
+            text("Flick IT", width/5, (height/10) * 8);
+            goText = getTime();
+        } else {
+            //noLoop();
+        }
+    }
+
+    public String getTime(){
+        long completedIn = System.currentTimeMillis() - time;
+        return (new SimpleDateFormat("ss:SSS")).format(completedIn);
     }
 
 }

@@ -6,7 +6,7 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
 
     private PApplet p;
     private Game game;
-    private boolean solved;
+    private boolean solved = false;
 
     private float progress = 9;
 
@@ -71,9 +71,9 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
     }
 
     @Override
-    public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent lol) {
+    public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent event) {
         //Add to progress
-        float input = (float) (lol.getVoltageRatio());
+        float input = (float) (event.getVoltageRatio());
         progress =  (float) ((input-0.0)/(0.999 - 0.0) * (140) + 0);
     }
 
