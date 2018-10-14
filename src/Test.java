@@ -27,6 +27,11 @@ public class Test extends PApplet{
 
     // Creation of Output objects
     Game game = new Game(this,1260, 720, 51,51,51);
+    Ministick myBall = new Ministick(this, game,0,0);
+    Rotation myArc = new Rotation(this, game);
+    Click myClick = new Click(this, game);
+    Sound mySound = new Sound(this, game);
+    Light myLight = new Light(this, game);
 
     // Timer Initialisation
     boolean timeOn = false;
@@ -105,12 +110,12 @@ public class Test extends PApplet{
             click.open();
             light.open();
 
-            chRota.addVoltageRatioChangeListener(game.myArc);
-            chLin1.addVoltageRatioChangeListener(game.myBall);
-            chLin2.addVoltageRatioChangeListener(game.myBall);
-            click.addStateChangeListener(game.myClick);
-            sound.addVoltageChangeListener(game.mySound);
-            light.addVoltageRatioChangeListener(game.myLight);
+            chRota.addVoltageRatioChangeListener(myArc);
+            chLin1.addVoltageRatioChangeListener(myBall);
+            chLin2.addVoltageRatioChangeListener(myBall);
+            click.addStateChangeListener(myClick);
+            sound.addVoltageChangeListener(mySound);
+            light.addVoltageRatioChangeListener(myLight);
 
             redLED.setState(true);
             servo.setTargetPosition(0);
@@ -189,7 +194,7 @@ public class Test extends PApplet{
         if(gameState == 1){
             printTopText();
             goText = "Cover Sensor to Start";
-            if(game.myLight.getSensorReading() < 10 && !timeOn){
+            if(myLight.getSensorReading() < 10 && !timeOn){
                 goText = "GO!!!";
                 timeOn = true;
                 this.time = System.currentTimeMillis();
@@ -198,36 +203,36 @@ public class Test extends PApplet{
         } else if(gameState == 2){
 
             printTopText();
-            game.myBall.draw();
+            myBall.draw();
             goText = getTime();
-            if(game.myBall.isSolved()){
-                game.myBall.newGame();
+            if(myBall.isSolved()){
+                myBall.newGame();
                 randomState();
             }
         } else if(gameState == 3){
 
             printTopText();
-            game.myArc.draw();
+            myArc.draw();
             goText = getTime();
-            if(game.myArc.isSolved()){
-                game.myArc.newGame();
+            if(myArc.isSolved()){
+                myArc.newGame();
                 randomState();
             }
         } else if(gameState == 4){
 
             printTopText();
-            game.myClick.draw();
+            myClick.draw();
             goText = getTime();
-            if(game.myClick.isSolved()){
-                game.myClick.newGame();
+            if(myClick.isSolved()){
+                myClick.newGame();
                 randomState();
             }
         } else if(gameState == 5){
             printTopText();
-            game.mySound.draw();
+            mySound.draw();
             goText = getTime();
-            if(game.mySound.isSolved()){
-                game.mySound.newGame();
+            if(mySound.isSolved()){
+                mySound.newGame();
                 randomState();
             }
         } else if(gameState == 6){
@@ -254,7 +259,7 @@ public class Test extends PApplet{
 
         }
         else if(gameState == 8){
-            fill(255, 255, 255); // red = default
+            fill(255, 255, 255);
             text("Please enter your name", width/2, height/4);
             textSize(32);
             textAlign(CENTER, CENTER);
@@ -266,7 +271,7 @@ public class Test extends PApplet{
                 fill(255, 255, 255);
                 if (i==index)
                     fill(255);
-                text((char)(letters[i])+"", ((width/2))+i*65, height/2);
+                text((letters[i])+"", ((width/2) - 100)+i*65, height/2);
                 i++;
             }
         } else if (gameState == 9){
