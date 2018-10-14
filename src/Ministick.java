@@ -37,6 +37,8 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
     private int height;
     private int width;
 
+    private int display = 3;
+
 
 
     Ministick(PApplet p, Game game, float x, float y) {
@@ -49,9 +51,8 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
     }
 
     public void draw() {
-        p.fill(textR,textG,textB);
-        p.stroke(textR, textG,textB);
-        p.text("Flick IT", width/5, (height/10) * 8);
+
+        printText();
 
         //Draw ball where the joystick is
         p.strokeWeight(2);
@@ -79,8 +80,15 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
         }
 
         if(top & bottom){
+            display--;
+            reset();
+        }
+
+        if(display <= 0){
             setBallColor(0,255,0);
             setTextColor(0,255,0);
+            setBotLineColor(0,255,0);
+            setTopLineColor(0,255,0);
             solved = true;
         }
 
@@ -127,7 +135,26 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
         this.textB = b;
     }
 
+    private void reset(){
+        setTopLineColor(0,191,255);
+        setBotLineColor(0,191,255);
+        top = false;
+        bottom = false;
+    }
+
     public boolean isSolved() {
         return solved;
+    }
+
+    private void printText(){
+        String toDisplay = "";
+        p.fill(textR,textG,textB);
+        p.stroke(textR, textG,textB);
+        if(display > 0) {
+            toDisplay = "Flick IT (" + display + ")";
+        } else {
+            toDisplay = "Flick IT";
+        }
+        p.text(toDisplay, width/5, (height/10) * 8);
     }
 }
