@@ -1,5 +1,4 @@
 import processing.core.PApplet;
-import processing.core.PFont;
 
 public class Game extends PApplet {
     private PApplet p;
@@ -10,6 +9,11 @@ public class Game extends PApplet {
     private int height;
     private int width;
 
+    public Ministick myBall;
+    public Rotation myArc;
+    public Click myClick;
+    public Sound mySound;
+    public Light myLight;
 
 
     public Game(PApplet p, int width, int height, int backgroundR, int backgroundG, int backgroundB) {
@@ -19,6 +23,12 @@ public class Game extends PApplet {
         this.backgroundB = backgroundB;
         this.height = height;
         this.width = width;
+
+        Ministick myBall = new Ministick(p, this,0,0);
+        Rotation myArc = new Rotation(p, this);
+        Click myClick = new Click(p, this);
+        Sound mySound = new Sound(p, this);
+        Light myLight = new Light(p, this);
     }
 
     public void draw(){

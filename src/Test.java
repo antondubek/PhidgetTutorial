@@ -27,11 +27,6 @@ public class Test extends PApplet{
 
     // Creation of Output objects
     Game game = new Game(this,1260, 720, 51,51,51);
-    Ministick myBall = new Ministick(this, game,0,0);
-    Rotation myArc = new Rotation(this, game);
-    Click myClick = new Click(this, game);
-    Sound mySound = new Sound(this, game);
-    Light myLight = new Light(this, game);
 
     // Timer Initialisation
     boolean timeOn = false;
@@ -110,12 +105,12 @@ public class Test extends PApplet{
             click.open();
             light.open();
 
-            chRota.addVoltageRatioChangeListener(myArc);
-            chLin1.addVoltageRatioChangeListener(myBall);
-            chLin2.addVoltageRatioChangeListener(myBall);
-            click.addStateChangeListener(myClick);
-            sound.addVoltageChangeListener(mySound);
-            light.addVoltageRatioChangeListener(myLight);
+            chRota.addVoltageRatioChangeListener(game.myArc);
+            chLin1.addVoltageRatioChangeListener(game.myBall);
+            chLin2.addVoltageRatioChangeListener(game.myBall);
+            click.addStateChangeListener(game.myClick);
+            sound.addVoltageChangeListener(game.mySound);
+            light.addVoltageRatioChangeListener(game.myLight);
 
             redLED.setState(true);
             servo.setTargetPosition(0);
@@ -152,19 +147,19 @@ public class Test extends PApplet{
             //success
             for (TableRow row : table.rows()) {
                 int id = row.getInt("id");
-                      //String scores[id] = row.getString("savedata");
+                      //String scores[id] = row.getString("time");
             }
         } else {
             // fail:
             // first run, make table
             table = new Table();
             table.addColumn("id");
-            table.addColumn("savedata");
+            table.addColumn("time");
             table.addColumn("name");
             for (int i = 0; i<N; i++) {
                 TableRow newRow = table.addRow();
                 newRow.setInt("id", table.lastRowIndex());
-                newRow.setInt("savedata", 99999);
+                newRow.setInt("time", 99999);
                 newRow.setString("name", "");
             }
         }
@@ -194,7 +189,7 @@ public class Test extends PApplet{
         if(gameState == 1){
             printTopText();
             goText = "Cover Sensor to Start";
-            if(myLight.getSensorReading() < 10 && !timeOn){
+            if(game.myLight.getSensorReading() < 10 && !timeOn){
                 goText = "GO!!!";
                 timeOn = true;
                 this.time = System.currentTimeMillis();
@@ -203,36 +198,36 @@ public class Test extends PApplet{
         } else if(gameState == 2){
 
             printTopText();
-            myBall.draw();
+            game.myBall.draw();
             goText = getTime();
-            if(myBall.isSolved()){
-                myBall.newGame();
+            if(game.myBall.isSolved()){
+                game.myBall.newGame();
                 randomState();
             }
         } else if(gameState == 3){
 
             printTopText();
-            myArc.draw();
+            game.myArc.draw();
             goText = getTime();
-            if(myArc.isSolved()){
-                myArc.newGame();
+            if(game.myArc.isSolved()){
+                game.myArc.newGame();
                 randomState();
             }
         } else if(gameState == 4){
 
             printTopText();
-            myClick.draw();
+            game.myClick.draw();
             goText = getTime();
-            if(myClick.isSolved()){
-                myClick.newGame();
+            if(game.myClick.isSolved()){
+                game.myClick.newGame();
                 randomState();
             }
         } else if(gameState == 5){
             printTopText();
-            mySound.draw();
+            game.mySound.draw();
             goText = getTime();
-            if(mySound.isSolved()){
-                mySound.newGame();
+            if(game.mySound.isSolved()){
+                game.mySound.newGame();
                 randomState();
             }
         } else if(gameState == 6){
@@ -275,12 +270,10 @@ public class Test extends PApplet{
                 i++;
             }
         } else if (gameState == 9){
-            // state after the Input
 
             result=""+letters[0]+letters[1]+letters[2]+letters[3];
             println(result);
 
-            System.out.println("DEBUG: Floaty Time = " + Float.parseFloat(getTime()));
             addNewScore(getTimeInt(), result);
             saveScores();
         } else if(gameState == 10) {
@@ -321,7 +314,7 @@ public class Test extends PApplet{
         for (int i = 0; i < N; i++) {
             TableRow newRow = table.getRow(i);
 
-            String x = Integer.toString(newRow.getInt("savedata"));
+            String x = Integer.toString(newRow.getInt("time"));
             //System.out.println(x.length());
             if(x.length() == 4){
                 x = x.charAt(0) + "." + x.substring(1, x.length());
@@ -391,9 +384,7 @@ public class Test extends PApplet{
                 exit();
             }
         }
-
-        //state
-    }//func
+    }
 
     public String getTime(){
         if(timeOn) {
@@ -408,15 +399,14 @@ public class Test extends PApplet{
 
 
     void addNewScore(int score, String name) {
-        //
-        // we add a new row, table is too long now
+
         TableRow newRow = table.addRow();
         newRow.setInt("id", table.lastRowIndex());
-        newRow.setInt("savedata", (score));
+        newRow.setInt("time", (score));
         newRow.setString("name", name);
 
         // we sort
-        table.setColumnType("savedata", Table.INT);
+        table.setColumnType("time", Table.INT);
         table.trim();  // trim
         table.sort(1); // sort backwards by score
 
@@ -424,7 +414,7 @@ public class Test extends PApplet{
         println ("---");
         for (int i = 0; i<table.getRowCount(); i++) {
             newRow = table.getRow(i);
-            println (newRow.getInt("savedata"), newRow.getString("name"));
+            println (newRow.getInt("time"), newRow.getString("name"));
         }
         println ("---");
 
@@ -439,7 +429,7 @@ public class Test extends PApplet{
         println ("---");
         for (int i = 0; i<table.getRowCount(); i++) {
             newRow = table.getRow(i);
-            println (newRow.getInt("savedata"), newRow.getString("name"));
+            println (newRow.getInt("time"), newRow.getString("name"));
         }
         println ("---");
 
@@ -457,7 +447,7 @@ public class Test extends PApplet{
         for (TableRow newRow : table.rows()) {
             //If the score is lower than the top 5
 
-            if ((score < newRow.getInt("savedata"))) {
+            if ((score < newRow.getInt("time"))) {
                 return true; // high enough
             }
         }
