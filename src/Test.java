@@ -150,7 +150,7 @@ public class Test extends PApplet{
             for (int i = 0; i<N; i++) {
                 TableRow newRow = table.addRow();
                 newRow.setInt("id", table.lastRowIndex());
-                newRow.setInt("savedata", 0);
+                newRow.setInt("savedata", 99999);
                 newRow.setString("name", "");
             }
         }
@@ -225,27 +225,28 @@ public class Test extends PApplet{
             textSize(50);
             String newText = ("COMPLETED in " + getTime() + " seconds.");
             text(newText, width/2, (height/8));
-            fill(0,191,255);
-            text("Highscores", width/2, (height/8)* 2);
 
-            for (int i=0; i<N; i++) {
-                TableRow newRow = table.getRow(i);
-                text(newRow.getInt("savedata")
-                        +" " +newRow.getString("name"), width/2, ((height/8) * 3)+80*i);
-            }
-        } else if(gameState == 8){
+            printHighscores();
+
+            textAlign(CENTER, CENTER);
+            textSize(32);
+            fill(255,255,255);
+            text("Press space to enter name, N for new game or Q to Quit", width/2, height/10 * 9);
+        }
+        else if(gameState == 8){
             fill(255, 255, 255); // red = default
             text("Please enter your name", width/2, height/4);
-            textSize(18);
+            textSize(32);
             text("Use cursor left right and up and down, return to finish input", width/2, height/10 * 8);
             textSize(80);
 
             int i=0;
             for (char c : letters) {
-                fill(255, 255, 255); // red = default
+                fill(255, 255, 255);
                 if (i==index)
-                    fill(255); // selected
-                text((char)(letters[i])+"", width/2+i*65, height/2);
+                    fill(255);
+                textAlign(CENTER, CENTER);
+                text((char)(letters[i])+"", ((width/2))+i*65, height/2);
                 i++;
             }
         } else if (gameState == 9){
@@ -254,18 +255,18 @@ public class Test extends PApplet{
             result=""+letters[0]+letters[1]+letters[2]+letters[3];
             println(result);
 
+            System.out.println("DEBUG: Floaty Time = " + Float.parseFloat(getTime()));
             addNewScore(getTimeInt(), result);
             saveScores();
         } else if(gameState == 10) {
             fill(255, 255, 255);
-            fill(0, 191, 255);
-            text("Highscores", width / 2, (height / 8) * 2);
+            textSize(50);
+            text("Highscores", width / 2, (height / 8));
 
-            for (int i = 0; i < N; i++) {
-                TableRow newRow = table.getRow(i);
-                text(newRow.getInt("savedata")
-                        + " " + newRow.getString("name"), width / 2, ((height / 8) * 3) + 80 * i);
-            }
+            printHighscores();
+
+            textSize(32);
+            text("Press SPACE for new game or Q to quit", width / 2, (height / 8) * 6);
         }
 
         else if(gameState == 11){
@@ -280,6 +281,25 @@ public class Test extends PApplet{
 
     }
 
+    public void printHighscores(){
+        fill(0, 191, 255);
+        textAlign(LEFT, CENTER);
+        for (int i = 0; i < N; i++) {
+            TableRow newRow = table.getRow(i);
+
+            String x = Integer.toString(newRow.getInt("savedata"));
+            //System.out.println(x.length());
+            if(x.length() == 4){
+                x = x.charAt(0) + "." + x.substring(1, x.length());
+            } else {
+                x = x.substring(0,2) + "." + x.substring(3, x.length());
+            }
+
+            text((i+1) + ". " + x
+                    + " " + newRow.getString("name"), (width / 5) * 2, ((height / 8) * 2) + 80 * i);
+        }
+    }
+
     public void keyPressed() {
 
         // state tells how the program works:
@@ -291,11 +311,13 @@ public class Test extends PApplet{
                     letters[i]='A';
                 }
                 // add one element to high scores
-
-                println(getTimeInt());
-                if (highEnoughForHighScore(getTime())) {
+                if (highEnoughForHighScore(getTimeInt())) {
                     gameState=8;
                 }
+            } else if (key == 'n'){
+                gameState = 11;
+            } else if (key == 'q' || key == 'Q'){
+                exit();
             }
         }// state
         // -------------------
@@ -343,7 +365,7 @@ public class Test extends PApplet{
         if(timeOn) {
             completedIn = System.currentTimeMillis() - time;
         }
-        return (new SimpleDateFormat("ss:SSS")).format(completedIn);
+        return (new SimpleDateFormat("ss.SSS")).format(completedIn);
     }
 
     public int getTimeInt(){
@@ -360,8 +382,9 @@ public class Test extends PApplet{
         newRow.setString("name", name);
 
         // we sort
+        table.setColumnType("savedata", Table.INT);
         table.trim();  // trim
-        table.sort("savedata"); // sort backwards by score
+        table.sort(1); // sort backwards by score
 
         // test
         println ("---");
@@ -393,15 +416,19 @@ public class Test extends PApplet{
         saveTable(table, "data/savescore.csv");
     }
 
-    boolean highEnoughForHighScore(String score) {
+    boolean highEnoughForHighScore(int score) {
 
         // test whether new score is high enough to get into the highscore
 
         for (TableRow newRow : table.rows()) {
-            if (score.compareTo(str(newRow.getInt("savedata")))>0) {
+            //If the score is lower than the top 5
+
+            if ((score < newRow.getInt("savedata"))) {
+                System.out.println(true);
                 return true; // high enough
             }//if
         }//for
+        System.out.println(false);
         return false; // NOT high enough
     } //func
 
