@@ -231,12 +231,13 @@ public class Test extends PApplet{
             textAlign(CENTER, CENTER);
             textSize(32);
             fill(255,255,255);
-            text("Press space to enter name, N for new game or Q to Quit", width/2, height/10 * 9);
+            text("Press space to enter name, N for new game or Q to Quit", width/2, (height/10) * 8);
         }
         else if(gameState == 8){
             fill(255, 255, 255); // red = default
             text("Please enter your name", width/2, height/4);
             textSize(32);
+            textAlign(CENTER, CENTER);
             text("Use cursor left right and up and down, return to finish input", width/2, height/10 * 8);
             textSize(80);
 
@@ -245,7 +246,6 @@ public class Test extends PApplet{
                 fill(255, 255, 255);
                 if (i==index)
                     fill(255);
-                textAlign(CENTER, CENTER);
                 text((char)(letters[i])+"", ((width/2))+i*65, height/2);
                 i++;
             }
@@ -266,7 +266,9 @@ public class Test extends PApplet{
             printHighscores();
 
             textSize(32);
-            text("Press SPACE for new game or Q to quit", width / 2, (height / 8) * 6);
+            textAlign(CENTER, CENTER);
+            fill(255, 255, 255);
+            text("Press SPACE for new game or Q to quit", width / 2, (height / 10) * 9);
         }
 
         else if(gameState == 11){
@@ -410,7 +412,7 @@ public class Test extends PApplet{
         println ("---");
 
         gameState = 10;
-    }//func
+    }
 
     void saveScores() {
         saveTable(table, "data/savescore.csv");
