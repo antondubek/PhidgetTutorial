@@ -187,6 +187,6 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
         top = false;
         bottom = false;
 
-        display = 1;
+        display = 3;
     }
 }

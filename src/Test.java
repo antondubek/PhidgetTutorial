@@ -133,6 +133,10 @@ public class Test extends PApplet{
         myArrayList.add(3);
         myArrayList.add(4);
         myArrayList.add(5);
+        myArrayList.add(2);
+        myArrayList.add(3);
+        myArrayList.add(4);
+        myArrayList.add(5);
 
         // Leaderboard setup
         // letters for Input
@@ -471,6 +475,10 @@ public class Test extends PApplet{
         time = 0;
         completedIn = 0;
 
+        myArrayList.add(2);
+        myArrayList.add(3);
+        myArrayList.add(4);
+        myArrayList.add(5);
         myArrayList.add(2);
         myArrayList.add(3);
         myArrayList.add(4);

@@ -72,7 +72,7 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
 
         // USE FOR REAL THING
         //System.out.println(input);
-        counter =  (int) (1 + (input - 60)*(20-3)/(350-60));
+        counter =  (int) (1 + (input - 60)*(20-3)/(300-60));
 
         // USE FOR LATE NIGHT TESTING
         //counter =  (int) (1 + (input - 60)*(20-3)/(200-60));
@@ -89,7 +89,7 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
 
         maxStacks = 20;
         counter = 1;
-        display = 1;
+        display = 10;
 
         textR = 255;
         textG = 255;
