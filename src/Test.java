@@ -1,6 +1,8 @@
 import com.phidget22.*;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.data.Table;
+import processing.data.TableRow;
 
 import java.text.SimpleDateFormat;
 
@@ -11,45 +13,59 @@ public class Test extends PApplet{
 
     }
 
-    VoltageRatioInput chRota; // The channel for the Rotation sensor
+    // Initialisation of Inputs and Outputs
+    VoltageRatioInput chRota;
     VoltageRatioInput chLin1;
     VoltageRatioInput chLin2;
     DigitalOutput redLED;
     DigitalInput click;
     VoltageInput sound;
     VoltageRatioInput light;
-
     RCServo servo;
 
-    Game game = new Game(this,1800, 600, 51,51,51);
-
+    // Creation of Output objects
+    Game game = new Game(this,1260, 720, 51,51,51);
     Ministick myBall = new Ministick(this, game,0,0);
     Rotation myArc = new Rotation(this, game);
     Click myClick = new Click(this, game);
     Sound mySound = new Sound(this, game);
     Light myLight = new Light(this, game);
 
+    // Timer Initialisation
     boolean timeOn = false;
     long time;
     long completedIn;
 
+    // Font initialisation
     private PFont myFont;
     private String goText = "Cover Sensor to Start";
 
+    // State Initialisation
     int gameState = 1;
+
+    // Leaderboard Initialisation
+    char[] letters = new char[4]; // 4 letters
+    int index=0;                  // which letter is active
+    String result="";
+    Table table;
+    String savegame = "savescore.csv";
+    final int N = 5; // entries in high score
+
 
 
     public void settings(){
 
         size(game.getWidth(),game.getHeight());
 
-        int phidgetNo = 274077;
-        int servoNo = 306007;
-
-
-
         // Makes things look nicer with some Anti-Aliasing
         smooth();
+    }
+
+    public void setup(){
+        myFont = createFont("Lobster_1.3.otf", 40);
+
+        int phidgetNo = 274077;
+        int servoNo = 306007;
 
         try {
             chRota = new VoltageRatioInput();
@@ -78,8 +94,6 @@ public class Test extends PApplet{
             servo.setChannel(0);
             click.setChannel(0);
             light.setChannel(4);
-
-            //chRota.setDataInterval(1);
 
             chRota.open();
             chLin1.open();
@@ -110,11 +124,36 @@ public class Test extends PApplet{
         }
 
 
+        // Leaderboard setup
+        // letters for Input
+        for (int i=0; i<letters.length; i++) {
+            letters[i]='A';
+        }
 
-    }
-
-    public void setup(){
-        myFont = createFont("Lobster_1.3.otf", 40);
+        //try to load table
+        table = null;
+        table = loadTable(savegame, "header");
+        // success?
+        if (table!=null) {
+            //success
+            for (TableRow row : table.rows()) {
+                int id = row.getInt("id");
+                      //String scores[id] = row.getString("savedata");
+            }
+        } else {
+            // fail:
+            // first run, make table
+            table = new Table();
+            table.addColumn("id");
+            table.addColumn("savedata");
+            table.addColumn("name");
+            for (int i = 0; i<N; i++) {
+                TableRow newRow = table.addRow();
+                newRow.setInt("id", table.lastRowIndex());
+                newRow.setInt("savedata", 0);
+                newRow.setString("name", "");
+            }
+        }
     }
 
     public void draw() {
@@ -124,13 +163,10 @@ public class Test extends PApplet{
 
         fill(255,255,255);
         stroke(255,255,255);
-        textSize(50);
-        textFont(myFont);
-        text("Welcome to PhidgIT", width/2, height/10);
-        textAlign(CENTER, TOP);
 
         textSize(32);
         textAlign(CENTER, CENTER);
+        textFont(myFont);
 
         int width = game.getWidth();
         int height = game.getHeight();
@@ -138,6 +174,8 @@ public class Test extends PApplet{
         text(goText, width/2, (height/10) * 9);
 
         if(gameState == 1){
+            printTopText();
+            goText = "Cover Sensor to Start";
             if(myLight.getSensorReading() < 10 && !timeOn){
                 goText = "GO!!!";
                 timeOn = true;
@@ -145,12 +183,14 @@ public class Test extends PApplet{
                 gameState = 2;
             }
         } else if(gameState == 2){
+            printTopText();
             myBall.draw();
             goText = getTime();
             if(myBall.isSolved()){
                 gameState = 3;
             }
         } else if(gameState == 3){
+            printTopText();
             myArc.draw();
             goText = getTime();
             myBall.draw();
@@ -158,6 +198,7 @@ public class Test extends PApplet{
                 gameState = 4;
             }
         } else if(gameState == 4){
+            printTopText();
             myClick.draw();
             goText = getTime();
             myBall.draw();
@@ -166,6 +207,7 @@ public class Test extends PApplet{
                 gameState = 5;
             }
         } else if(gameState == 5){
+            printTopText();
             mySound.draw();
             myBall.draw();
             myArc.draw();
@@ -182,12 +224,120 @@ public class Test extends PApplet{
             stroke(255,255,255);
             textSize(50);
             String newText = ("COMPLETED in " + getTime() + " seconds.");
-            text(newText, width/2, (height/2));
+            text(newText, width/2, (height/8));
+            fill(0,191,255);
+            text("Highscores", width/2, (height/8)* 2);
+
+            for (int i=0; i<N; i++) {
+                TableRow newRow = table.getRow(i);
+                text(newRow.getInt("savedata")
+                        +" " +newRow.getString("name"), width/2, ((height/8) * 3)+80*i);
+            }
+        } else if(gameState == 8){
+            fill(255, 255, 255); // red = default
+            text("Please enter your name", width/2, height/4);
+            textSize(18);
+            text("Use cursor left right and up and down, return to finish input", width/2, height/10 * 8);
+            textSize(80);
+
+            int i=0;
+            for (char c : letters) {
+                fill(255, 255, 255); // red = default
+                if (i==index)
+                    fill(255); // selected
+                text((char)(letters[i])+"", width/2+i*65, height/2);
+                i++;
+            }
+        } else if (gameState == 9){
+            // state after the Input
+
+            result=""+letters[0]+letters[1]+letters[2]+letters[3];
+            println(result);
+
+            addNewScore(getTimeInt(), result);
+            saveScores();
+        } else if(gameState == 10) {
+            fill(255, 255, 255);
+            fill(0, 191, 255);
+            text("Highscores", width / 2, (height / 8) * 2);
+
+            for (int i = 0; i < N; i++) {
+                TableRow newRow = table.getRow(i);
+                text(newRow.getInt("savedata")
+                        + " " + newRow.getString("name"), width / 2, ((height / 8) * 3) + 80 * i);
+            }
+        }
+
+        else if(gameState == 11){
+            mySound.newGame();
+            myBall.newGame();
+            myArc.newGame();
+            myClick.newGame();
+            newGame();
         }
 
 
 
     }
+
+    public void keyPressed() {
+
+        // state tells how the program works:
+        if (gameState==6) {
+
+            if (key == ' ') { // Press space to add score
+                letters = new char[4];
+                for (int i=0; i<letters.length; i++) {
+                    letters[i]='A';
+                }
+                // add one element to high scores
+
+                println(getTimeInt());
+                if (highEnoughForHighScore(getTime())) {
+                    gameState=8;
+                }
+            }
+        }// state
+        // -------------------
+        else  if (gameState==8) {
+            // state for the Input
+
+            if (keyCode == UP) {
+                if (letters[index] > 64) {
+                    letters[index]--;
+                    if (letters[index] == 64) {
+                        letters[index] = 90;
+                    }
+                }
+            } else if (keyCode == DOWN) {
+                if (letters[index] < 91) {
+                    letters[index]++;
+                    if (letters[index] == 91) {
+                        letters[index] = 65;
+                    }
+                }
+            } else if (keyCode == LEFT) {
+                index--;
+                if (index<0)
+                    index=0;
+            } else if (keyCode == RIGHT) {
+                index++;
+                if (index>3)
+                    index=3;
+            } else if (key == RETURN||key==ENTER) {
+                gameState=9;
+            }
+        } else if (gameState==10){
+            if(key == ' '){
+                gameState = 11;
+            }
+            if (key == 'q' || key == 'Q'){
+                exit();
+            }
+        }
+
+        //state
+    }//func
 
     public String getTime(){
         if(timeOn) {
@@ -196,6 +346,86 @@ public class Test extends PApplet{
         return (new SimpleDateFormat("ss:SSS")).format(completedIn);
     }
 
+    public int getTimeInt(){
+        return (int)completedIn;
+    }
+
+
+    void addNewScore(int score, String name) {
+        //
+        // we add a new row, table is too long now
+        TableRow newRow = table.addRow();
+        newRow.setInt("id", table.lastRowIndex());
+        newRow.setInt("savedata", (score));
+        newRow.setString("name", name);
+
+        // we sort
+        table.trim();  // trim
+        table.sort("savedata"); // sort backwards by score
+
+        // test
+        println ("---");
+        for (int i = 0; i<table.getRowCount(); i++) {
+            newRow = table.getRow(i);
+            println (newRow.getInt("savedata"), newRow.getString("name"));
+        }
+        println ("---");
+
+        // we delete items
+        if (table.getRowCount()>5)
+            for (int i=table.getRowCount()-1; i>=5; i--) {
+                TableRow row=table.getRow(i);
+                table.removeRow(i);
+            }
+
+        // test
+        println ("---");
+        for (int i = 0; i<table.getRowCount(); i++) {
+            newRow = table.getRow(i);
+            println (newRow.getInt("savedata"), newRow.getString("name"));
+        }
+        println ("---");
+
+        gameState = 10;
+    }//func
+
+    void saveScores() {
+        saveTable(table, "data/savescore.csv");
+    }
+
+    boolean highEnoughForHighScore(String score) {
+
+        // test whether new score is high enough to get into the highscore
+
+        for (TableRow newRow : table.rows()) {
+            if (score.compareTo(str(newRow.getInt("savedata")))>0) {
+                return true; // high enough
+            }//if
+        }//for
+        return false; // NOT high enough
+    } //func
+
+    public void printTopText(){
+        textSize(50);
+        text("Welcome to PhidgIT", width/2, height/10);
+        textAlign(CENTER, TOP);
+    }
+
+    public void newGame(){
+        timeOn = false;
+        time = 0;
+        completedIn = 0;
+
+        // State Initialisation
+        gameState = 1;
+
+        // Leaderboard Initialisation
+        letters = new char[4]; // 4 letters
+        index=0;                  // which letter is active
+        result="";
+
+        final int N = 5; // entries in high score
+    }
 }
 
 

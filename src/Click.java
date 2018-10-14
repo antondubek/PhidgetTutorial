@@ -8,17 +8,17 @@ public class Click extends PApplet implements DigitalInputStateChangeListener {
     private Game game;
     private boolean solved;
 
-    private int maxStacks = 20;
-    private int counter = 1;
-    private int helper = 0;
+    private int maxStacks;
+    private int counter;
+    private int helper;
 
-    private int r = 138;
-    private int g = 20;
-    private int b = 246;
+    private int r;
+    private int g;
+    private int b;
 
-    private int textR = 255;
-    private int textG = 255;
-    private int textB = 255;
+    private int textR;
+    private int textG;
+    private int textB;
 
     private int width;
     private int height;
@@ -28,6 +28,7 @@ public class Click extends PApplet implements DigitalInputStateChangeListener {
         this.game = game;
         this.width = game.getWidth();
         this.height = game.getHeight();
+        this.newGame();
     }
 
     public void draw(){
@@ -69,5 +70,21 @@ public class Click extends PApplet implements DigitalInputStateChangeListener {
 
     public boolean isSolved() {
         return solved;
+    }
+
+    public void newGame(){
+        solved = false;
+
+        maxStacks = 20;
+        counter = 1;
+        helper = 0;
+
+        r = 138;
+        g = 20;
+        b = 246;
+
+        textR = 255;
+        textG = 255;
+        textB = 255;
     }
 }

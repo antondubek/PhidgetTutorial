@@ -6,17 +6,12 @@ public class Light extends PApplet implements VoltageRatioInputVoltageRatioChang
 
     private PApplet p;
     private Game game;
-    private boolean solved;
 
     private float sensorReading;
 
     public Light(PApplet p, Game game) {
         this.p = p;
         this.game = game;
-    }
-
-    public boolean isSolved() {
-        return solved;
     }
 
     @Override
@@ -28,4 +23,5 @@ public class Light extends PApplet implements VoltageRatioInputVoltageRatioChang
     public float getSensorReading() {
         return sensorReading;
     }
+
 }

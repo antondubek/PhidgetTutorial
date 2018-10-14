@@ -7,37 +7,37 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
 
     private PApplet p;
     private Game game;
-    private boolean solved = false;
+    private boolean solved;
 
-    private float posX = 0;
-    private float posY = 0;
-    private float addX = 0;
-    private float addY = 0;
-    private float size = 10;
+    private float posX;
+    private float posY;
+    private float addX;
+    private float addY;
+    private float size;
 
-    private int ballR = 0;
-    private int ballG = 191;
-    private int ballB = 255;
+    private int ballR;
+    private int ballG;
+    private int ballB;
 
-    private int topLineR = 0;
-    private int topLineG = 191;
-    private int topLineB = 255;
+    private int topLineR;
+    private int topLineG;
+    private int topLineB;
 
-    private int botLineR = 0;
-    private int botLineG = 191;
-    private int botLineB = 255;
+    private int botLineR;
+    private int botLineG;
+    private int botLineB;
 
-    private int textR = 255;
-    private int textG = 255;
-    private int textB = 255;
+    private int textR;
+    private int textG;
+    private int textB;
 
-    private boolean top = false;
-    private boolean bottom = false;
+    private boolean top;
+    private boolean bottom;
 
     private int height;
     private int width;
 
-    private int display = 3;
+    private int display;
 
 
 
@@ -48,6 +48,7 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
         this.posY = y;
         this.height = game.getHeight();
         this.width = game.getWidth();
+        this.newGame();
     }
 
     public void draw() {
@@ -156,5 +157,36 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
             toDisplay = "Flick IT";
         }
         p.text(toDisplay, width/5, (height/10) * 8);
+    }
+
+    public void newGame(){
+        solved = false;
+
+        posX = 0;
+        posY = 0;
+        addX = 0;
+        addY = 0;
+        size = 10;
+
+        ballR = 0;
+        ballG = 191;
+        ballB = 255;
+
+        topLineR = 0;
+        topLineG = 191;
+        topLineB = 255;
+
+        botLineR = 0;
+        botLineG = 191;
+        botLineB = 255;
+
+        textR = 255;
+        textG = 255;
+        textB = 255;
+
+        top = false;
+        bottom = false;
+
+        display = 1;
     }
 }

@@ -8,15 +8,15 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
 
     private PApplet p;
     private Game game;
-    private boolean solved = false;
+    private boolean solved;
 
-    private int maxStacks = 20;
-    private int counter = 1;
-    private int display = 10;
+    private int maxStacks;
+    private int counter;
+    private int display;
 
-    private int textR = 255;
-    private int textG = 255;
-    private int textB = 255;
+    private int textR;
+    private int textG;
+    private int textB;
 
     private int height;
     private int width;
@@ -26,6 +26,7 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
         this.game = game;
         this.height = game.getHeight();
         this.width = game.getWidth();
+        this.newGame();
     }
 
     public void draw(){
@@ -48,7 +49,6 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
         } else {
             setTextColor(0,255,0);
             display--;
-            System.out.println(display);
             try{TimeUnit.MILLISECONDS.sleep(300);} catch(Exception e){ System.out.println(e);};
         }
 
@@ -81,5 +81,17 @@ public class Sound extends PApplet implements VoltageInputVoltageChangeListener 
         this.textR = r;
         this.textG = g;
         this.textB = b;
+    }
+
+    public void newGame(){
+        solved = false;
+
+        maxStacks = 20;
+        counter = 1;
+        display = 1;
+
+        textR = 255;
+        textG = 255;
+        textB = 255;
     }
 }

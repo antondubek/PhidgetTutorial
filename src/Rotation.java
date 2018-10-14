@@ -14,17 +14,17 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
     private float y;
     private float d;
 
-    private int r = 255;
-    private int g = 0;
-    private int b = 128;
+    private int r;
+    private int g;
+    private int b;
 
-    private int innerR = 255;
-    private int innerG = 0;
-    private int innerB = 128;
+    private int innerR;
+    private int innerG;
+    private int innerB;
 
-    private int outerR = 255;
-    private int outerG = 0;
-    private int outerB = 128;
+    private int outerR;
+    private int outerG;
+    private int outerB;
 
     private int textR = 255;
     private int textG = 255;
@@ -36,10 +36,8 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
 
     public Rotation(PApplet p, Game game){
         this.p = p;
-        this.x = (game.getWidth()/5) * 2;
-        this.y = game.getHeight()/2;
-        this.d = (float) (game.getHeight() *0.4);
         this.game = game;
+        this.newGame();
     }
 
     public void draw(){
@@ -116,5 +114,34 @@ class Rotation extends PApplet implements VoltageRatioInputVoltageRatioChangeLis
 
     public boolean isSolved() {
         return solved;
+    }
+
+    public void newGame(){
+        solved = false;
+
+        progress = 9;
+
+        x = (game.getWidth()/5) * 2;
+        y = game.getHeight()/2;
+        d = (float) (game.getHeight() *0.4);
+
+        r = 255;
+        g = 0;
+        b = 128;
+
+        innerR = 255;
+        innerG = 0;
+        innerB = 128;
+
+        outerR = 255;
+        outerG = 0;
+        outerB = 128;
+
+        textR = 255;
+        textG = 255;
+        textB = 255;
+
+        lower = false;
+        upper = false;
     }
 }
