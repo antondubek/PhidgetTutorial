@@ -1,6 +1,9 @@
 import com.phidget22.DigitalOutput;
 import processing.core.PApplet;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public class Game extends PApplet {
@@ -22,6 +25,16 @@ public class Game extends PApplet {
     //LED Helper
     private boolean on = false;
 
+    // State Initialisation
+    private int gameState = 1;
+    private ArrayList<Integer> myArrayList = new ArrayList<Integer>();
+    public ArrayList<Integer> getMyArrayList = new ArrayList<Integer>();
+
+    // Timer Initialisation
+    private boolean timeOn = false;
+    private long time;
+    private long completedIn;
+
 
     public Game(PApplet p, int width, int height, int backgroundR, int backgroundG, int backgroundB) {
         this.p = p;
@@ -31,6 +44,37 @@ public class Game extends PApplet {
         this.height = height;
         this.width = width;
         initialiseLEDs();
+
+        // Add to the array list the events you want to happen
+        myArrayList.add(2);
+        myArrayList.add(3);
+        myArrayList.add(4);
+        myArrayList.add(5);
+
+        /* DO twice if want
+        myArrayList.add(2);
+        myArrayList.add(3);
+        myArrayList.add(4);
+        myArrayList.add(5);
+        */
+    }
+
+    public void resetGame(){
+        myArrayList.add(2);
+        myArrayList.add(3);
+        myArrayList.add(4);
+        myArrayList.add(5);
+        myArrayList.add(2);
+        myArrayList.add(3);
+        myArrayList.add(4);
+        myArrayList.add(5);
+
+        // State Initialisation
+        gameState = 1;
+
+        timeOn = false;
+        time = 0;
+        completedIn = 0;
     }
 
     public void draw(){
@@ -56,6 +100,49 @@ public class Game extends PApplet {
     public int getWidth() {
         return width;
     }
+
+    public int getGameState(){
+        return this.gameState;
+    }
+
+    public void setGameState(int value){
+        gameState = value;
+    }
+
+    public void randomiseState(){
+        if(myArrayList.size() == 0){
+            gameState = 6;
+        } else {
+            int randomNumber = ThreadLocalRandom.current().nextInt(0, myArrayList.size());
+            gameState = myArrayList.get(randomNumber);
+            myArrayList.remove(randomNumber);
+        }
+    }
+
+    public void timerStart(){
+        timeOn = true;
+        this.time = System.currentTimeMillis();
+    }
+
+    public void timerStop(){
+        timeOn = false;
+    }
+
+    public String getTime(){
+        if(timeOn) {
+            completedIn = System.currentTimeMillis() - time;
+        }
+        return (new SimpleDateFormat("ss.SSS")).format(completedIn);
+    }
+
+    public int getTimeInt(){
+        return (int)completedIn;
+    }
+
+    public boolean getTimeOn(){
+        return timeOn;
+    }
+
 
     public void initialiseLEDs(){
         int phidgetNo = 274077;
@@ -90,7 +177,7 @@ public class Game extends PApplet {
 
     }
 
-    public void LEDControl(int gameState){
+    public void LEDUpdate(){
 
         if(gameState == 1){
             try{
@@ -168,6 +255,5 @@ public class Game extends PApplet {
                 System.out.println(e);
             }
         }
-
     }
 }

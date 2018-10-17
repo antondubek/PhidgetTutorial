@@ -4,10 +4,6 @@ import processing.core.PFont;
 import processing.data.Table;
 import processing.data.TableRow;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class Test extends PApplet{
 
     public static void main(String[] args) {
@@ -25,21 +21,12 @@ public class Test extends PApplet{
     Sound mySound = new Sound(this, game);
     Light myLight = new Light(this, game);
 
-    // Timer Initialisation
-    private boolean timeOn = false;
-    private long time;
-    private long completedIn;
-
-
 
     // Font initialisation
     private PFont myFont;
     private String goText = "Cover Sensor to Start";
 
-    // State Initialisation
-    private int gameState = 1;
-    private ArrayList<Integer> myArrayList = new ArrayList<Integer>();
-    public ArrayList<Integer> getMyArrayList = new ArrayList<Integer>();
+
 
     // Leaderboard Initialisation
     char[] letters = new char[4]; // 4 letters
@@ -52,6 +39,7 @@ public class Test extends PApplet{
 
 
     public void settings(){
+
 
         // Define the window size
         size(game.getWidth(),game.getHeight());
@@ -136,19 +124,6 @@ public class Test extends PApplet{
             System.out.println(e);
         }
 
-        // Add to the array list the events you want to happen
-        myArrayList.add(2);
-        myArrayList.add(3);
-        myArrayList.add(4);
-        myArrayList.add(5);
-
-        /* DO twice if want
-        myArrayList.add(2);
-        myArrayList.add(3);
-        myArrayList.add(4);
-        myArrayList.add(5);
-        */
-
         // Leaderboard setup
         // letters for Input
         for (int i=0; i<letters.length; i++) {
@@ -183,8 +158,9 @@ public class Test extends PApplet{
     public void draw() {
         background(game.getBackgroundR(), game.getBackgroundG(), game.getBackgroundB());
 
+        int currentState = game.getGameState();
         game.draw();
-        game.LEDControl(gameState);
+        game.LEDUpdate();
 
         fill(255,255,255);
         stroke(255,255,255);
@@ -202,61 +178,60 @@ public class Test extends PApplet{
         //    gameState = 6;
         //}
 
-        if(gameState == 1){
+        if(currentState == 1){
             printTopText();
             game.setRed(true);
             goText = "Cover Sensor to Start";
-            if(myLight.getSensorReading() < 10 && !timeOn){
+            if(myLight.getSensorReading() < 10 && !game.getTimeOn()){
                 goText = "GO!!!";
-                timeOn = true;
-                this.time = System.currentTimeMillis();
+                game.timerStart();
                 game.setRed(false);
-                randomState();
+                game.randomiseState();
             }
-        } else if(gameState == 2){
+        } else if(currentState == 2){
 
             printTopText();
             myBall.draw();
-            goText = getTime();
+            goText = game.getTime();
             if(myBall.isSolved()){
                 myBall.newGame();
-                randomState();
+                game.randomiseState();
             }
-        } else if(gameState == 3){
+        } else if(currentState == 3){
 
             printTopText();
             myArc.draw();
-            goText = getTime();
+            goText = game.getTime();
             if(myArc.isSolved()){
                 myArc.newGame();
-                randomState();
+                game.randomiseState();
             }
-        } else if(gameState == 4){
+        } else if(currentState == 4){
 
             printTopText();
             myClick.draw();
-            goText = getTime();
+            goText = game.getTime();
             if(myClick.isSolved()){
                 myClick.newGame();
-                randomState();
+                game.randomiseState();
             }
-        } else if(gameState == 5){
+        } else if(currentState == 5){
             printTopText();
             mySound.draw();
-            goText = getTime();
+            goText = game.getTime();
             if(mySound.isSolved()){
                 mySound.newGame();
-                randomState();
+                game.randomiseState();
             }
-        } else if(gameState == 6){
-            timeOn = false;
+        } else if(currentState == 6){
+            game.timerStop();
             goText = "";
             game.setRed(true);
 
             fill(255,255,255);
             stroke(255,255,255);
             textSize(50);
-            String newText = ("COMPLETED in " + getTime() + " seconds.");
+            String newText = ("COMPLETED in " + game.getTime() + " seconds.");
             text(newText, width/2, (height/8));
 
             printHighscores();
@@ -265,14 +240,14 @@ public class Test extends PApplet{
             textSize(32);
             fill(255,255,255);
 
-            if(highEnoughForHighScore(getTimeInt())){
+            if(highEnoughForHighScore(game.getTimeInt())){
                 text("Press space to enter name, N for new game or Q to Quit", width/2, (height/10) * 8);
             } else {
                 text("Score not high enough for top 5, press N for new game or Q to Quit", width/2, (height/10) * 8);
             }
 
         }
-        else if(gameState == 8){
+        else if(currentState == 8){
             fill(255, 255, 255);
             text("Please enter your name", width/2, height/4);
             textSize(32);
@@ -288,14 +263,14 @@ public class Test extends PApplet{
                 text((letters[i])+"", ((width/2) - 100)+i*65, height/2);
                 i++;
             }
-        } else if (gameState == 9){
+        } else if (currentState == 9){
 
             result=""+letters[0]+letters[1]+letters[2]+letters[3];
             println(result);
 
-            addNewScore(getTimeInt(), result);
+            addNewScore(game.getTimeInt(), result);
             saveScores();
-        } else if(gameState == 10) {
+        } else if(currentState == 10) {
             fill(255, 255, 255);
             textSize(50);
             text("Highscores", width / 2, (height / 8));
@@ -308,23 +283,13 @@ public class Test extends PApplet{
             text("Press SPACE for new game or Q to quit", width / 2, (height / 10) * 9);
         }
 
-        else if(gameState == 11){
+        else if(currentState == 11){
             newGame();
-        }
-
-
-
-    }
-
-    public void randomState(){
-        if(myArrayList.size() == 0){
-            gameState = 6;
-        } else {
-            int randomNumber = ThreadLocalRandom.current().nextInt(0, myArrayList.size());
-            gameState = myArrayList.get(randomNumber);
-            myArrayList.remove(randomNumber);
+            game.resetGame();
         }
     }
+
+
 
 
     public void printHighscores(){
@@ -348,8 +313,9 @@ public class Test extends PApplet{
 
     public void keyPressed() {
 
+        int currentState = game.getGameState();
         // state tells how the program works:
-        if (gameState==6) {
+        if (currentState==6) {
 
             if (key == ' ') { // Press space to add score
                 letters = new char[4];
@@ -357,17 +323,17 @@ public class Test extends PApplet{
                     letters[i]='A';
                 }
                 // add one element to high scores
-                if (highEnoughForHighScore(getTimeInt())) {
-                    gameState=8;
+                if (highEnoughForHighScore(game.getTimeInt())) {
+                    game.setGameState(8);
                 }
             } else if (key == 'n'){
-                gameState = 11;
+                game.setGameState(11);
             } else if (key == 'q' || key == 'Q'){
                 exit();
             }
         }// state
         // -------------------
-        else  if (gameState==8) {
+        else  if (currentState==8) {
             // state for the Input
 
             if (keyCode == UP) {
@@ -393,27 +359,16 @@ public class Test extends PApplet{
                 if (index>3)
                     index=3;
             } else if (key == RETURN||key==ENTER) {
-                gameState=9;
+                game.setGameState(9);
             }
-        } else if (gameState==10){
+        } else if (currentState==10){
             if(key == ' '){
-                gameState = 11;
+                game.setGameState(11);
             }
             if (key == 'q' || key == 'Q'){
                 exit();
             }
         }
-    }
-
-    public String getTime(){
-        if(timeOn) {
-            completedIn = System.currentTimeMillis() - time;
-        }
-        return (new SimpleDateFormat("ss.SSS")).format(completedIn);
-    }
-
-    public int getTimeInt(){
-        return (int)completedIn;
     }
 
 
@@ -452,7 +407,7 @@ public class Test extends PApplet{
         }
         println ("---");
 
-        gameState = 10;
+        game.setGameState(10);
     }
 
     void saveScores() {
@@ -480,22 +435,6 @@ public class Test extends PApplet{
     }
 
     public void newGame(){
-        timeOn = false;
-        time = 0;
-        completedIn = 0;
-
-        myArrayList.add(2);
-        myArrayList.add(3);
-        myArrayList.add(4);
-        myArrayList.add(5);
-        myArrayList.add(2);
-        myArrayList.add(3);
-        myArrayList.add(4);
-        myArrayList.add(5);
-
-        // State Initialisation
-        gameState = 1;
-
         // Leaderboard Initialisation
         letters = new char[4]; // 4 letters
         index=0;                  // which letter is active
