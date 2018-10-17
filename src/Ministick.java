@@ -98,12 +98,12 @@ class Ministick extends PApplet implements VoltageRatioInputVoltageRatioChangeLi
 
     public void onVoltageRatioChange(VoltageRatioInputVoltageRatioChangeEvent rce) {
         try {
-            if (rce.getSource().getChannel()==1) {
+            if (rce.getSource().getChannel()==4) {
                 addX = (float) (rce.getVoltageRatio()*width/(5));
                 addX += (width/5) - addX;
                 //System.out.println(addX);
             }
-            if (rce.getSource().getChannel()==2) {
+            if (rce.getSource().getChannel()==3) {
                 addY = (float) rce.getVoltageRatio()*height/(2) + 158;
                 //System.out.println(addY);
             }
