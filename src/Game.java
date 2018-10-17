@@ -1,13 +1,11 @@
 import com.phidget22.DigitalOutput;
-import processing.core.PApplet;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class Game extends PApplet {
-    private PApplet p;
+public class Game {
 
     private int backgroundR;
     private int backgroundG;
@@ -16,11 +14,11 @@ public class Game extends PApplet {
     private int width;
 
     // LED Initialisation
-    DigitalOutput redLED;
-    DigitalOutput greenLED;
-    DigitalOutput soundLED;
-    DigitalOutput rotationLED;
-    DigitalOutput joystickLED;
+    private DigitalOutput redLED;
+    private DigitalOutput greenLED;
+    private DigitalOutput soundLED;
+    private DigitalOutput rotationLED;
+    private DigitalOutput joystickLED;
 
     //LED Helper
     private boolean on = false;
@@ -28,7 +26,6 @@ public class Game extends PApplet {
     // State Initialisation
     private int gameState = 1;
     private ArrayList<Integer> myArrayList = new ArrayList<Integer>();
-    public ArrayList<Integer> getMyArrayList = new ArrayList<Integer>();
 
     // Timer Initialisation
     private boolean timeOn = false;
@@ -36,8 +33,7 @@ public class Game extends PApplet {
     private long completedIn;
 
 
-    public Game(PApplet p, int width, int height, int backgroundR, int backgroundG, int backgroundB) {
-        this.p = p;
+    public Game(int width, int height, int backgroundR, int backgroundG, int backgroundB) {
         this.backgroundR = backgroundR;
         this.backgroundG = backgroundG;
         this.backgroundB = backgroundB;
@@ -75,9 +71,7 @@ public class Game extends PApplet {
         timeOn = false;
         time = 0;
         completedIn = 0;
-    }
 
-    public void draw(){
 
     }
 
