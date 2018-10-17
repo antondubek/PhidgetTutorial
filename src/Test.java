@@ -7,7 +7,6 @@ import processing.data.TableRow;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 public class Test extends PApplet{
 
@@ -16,19 +15,7 @@ public class Test extends PApplet{
 
     }
 
-    // Initialisation of Inputs and Outputs
-    VoltageRatioInput chRota;
-    VoltageRatioInput chLin1;
-    VoltageRatioInput chLin2;
-    DigitalOutput redLED;
-    DigitalOutput greenLED;
-    DigitalOutput soundLED;
-    DigitalOutput rotationLED;
-    DigitalOutput joystickLED;
-    DigitalInput click;
-    VoltageInput sound;
-    VoltageRatioInput light;
-    RCServo servo;
+
 
     // Creation of Output objects
     Game game = new Game(this,1260, 720, 51,51,51);
@@ -43,8 +30,7 @@ public class Test extends PApplet{
     private long time;
     private long completedIn;
 
-    //LED Helper
-    private boolean on = false;
+
 
     // Font initialisation
     private PFont myFont;
@@ -75,6 +61,16 @@ public class Test extends PApplet{
     }
 
     public void setup(){
+
+        // Initialisation of Inputs and Outputs
+        VoltageRatioInput chRota;
+        VoltageRatioInput chLin1;
+        VoltageRatioInput chLin2;
+        DigitalInput click;
+        VoltageInput sound;
+        VoltageRatioInput light;
+        RCServo servo;
+
         //Import lobster font
         myFont = createFont("Lobster_1.3.otf", 40);
 
@@ -87,11 +83,7 @@ public class Test extends PApplet{
             chRota = new VoltageRatioInput();
             chLin1 = new VoltageRatioInput();
             chLin2 = new VoltageRatioInput();
-            redLED = new DigitalOutput();
-            greenLED = new DigitalOutput();
-            soundLED = new DigitalOutput();
-            rotationLED = new DigitalOutput();
-            joystickLED = new DigitalOutput();
+
             servo = new RCServo();
             click = new DigitalInput();
             sound = new VoltageInput();
@@ -100,11 +92,7 @@ public class Test extends PApplet{
             chRota.setDeviceSerialNumber(phidgetNo);
             chLin1.setDeviceSerialNumber(phidgetNo);
             chLin2.setDeviceSerialNumber(phidgetNo);
-            redLED.setDeviceSerialNumber(phidgetNo);
-            greenLED.setDeviceSerialNumber(phidgetNo);
-            soundLED.setDeviceSerialNumber(phidgetNo);
-            rotationLED.setDeviceSerialNumber(phidgetNo);
-            joystickLED.setDeviceSerialNumber(phidgetNo);
+
             sound.setDeviceSerialNumber(phidgetNo);
             servo.setDeviceSerialNumber(servoNo);
             click.setDeviceSerialNumber(phidgetNo);
@@ -114,11 +102,7 @@ public class Test extends PApplet{
             chLin1.setChannel(3);
             chLin2.setChannel(4);
             sound.setChannel(1);
-            redLED.setChannel(4);
-            greenLED.setChannel(3);
-            soundLED.setChannel(5);
-            rotationLED.setChannel(6);
-            joystickLED.setChannel(7);
+
             servo.setChannel(0);
             click.setChannel(7);
             light.setChannel(0);
@@ -126,11 +110,7 @@ public class Test extends PApplet{
             chRota.open();
             chLin1.open();
             chLin2.open();
-            redLED.open();
-            greenLED.open();
-            soundLED.open();
-            rotationLED.open();
-            joystickLED.open();
+
             sound.open();
             servo.open(5000);
             click.open();
@@ -204,7 +184,7 @@ public class Test extends PApplet{
         background(game.getBackgroundR(), game.getBackgroundG(), game.getBackgroundB());
 
         game.draw();
-        LEDControl(gameState);
+        game.LEDControl(gameState);
 
         fill(255,255,255);
         stroke(255,255,255);
@@ -224,23 +204,13 @@ public class Test extends PApplet{
 
         if(gameState == 1){
             printTopText();
-            try {
-                redLED.setState(true);
-                greenLED.setState(false);
-            } catch(Exception e) {
-                System.out.println(e);
-            }
+            game.setRed(true);
             goText = "Cover Sensor to Start";
             if(myLight.getSensorReading() < 10 && !timeOn){
                 goText = "GO!!!";
                 timeOn = true;
                 this.time = System.currentTimeMillis();
-                try {
-                    redLED.setState(false);
-                    greenLED.setState(true);
-                } catch(Exception e) {
-                    System.out.println(e);
-                }
+                game.setRed(false);
                 randomState();
             }
         } else if(gameState == 2){
@@ -281,12 +251,7 @@ public class Test extends PApplet{
         } else if(gameState == 6){
             timeOn = false;
             goText = "";
-            try {
-                redLED.setState(true);
-                greenLED.setState(false);
-            } catch(Exception e) {
-                System.out.println(e);
-            }
+            game.setRed(true);
 
             fill(255,255,255);
             stroke(255,255,255);
@@ -539,67 +504,7 @@ public class Test extends PApplet{
         final int N = 5; // entries in high score
     }
 
-    public void LEDControl(int gameState){
 
-        if(gameState == 1){
-            try{
-                soundLED.setState(true);
-                rotationLED.setState(true);
-                joystickLED.setState(true);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        } else if(gameState == 2 || gameState == 4){
-            try{
-                soundLED.setState(false);
-                rotationLED.setState(false);
-                joystickLED.setState(true);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        } else if(gameState == 3){
-            try{
-                soundLED.setState(false);
-                rotationLED.setState(true);
-                joystickLED.setState(false);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        } else if(gameState == 5){
-            try{
-                soundLED.setState(true);
-                rotationLED.setState(false);
-                joystickLED.setState(false);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-        } else if(gameState == 6){
-            if(on){
-                try{
-                    soundLED.setState(false);
-                    rotationLED.setState(false);
-                    joystickLED.setState(false);
-                    TimeUnit.MILLISECONDS.sleep(300);
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-                this.on = false;
-            } else{
-                try{
-                    soundLED.setState(true);
-                    rotationLED.setState(true);
-                    joystickLED.setState(true);
-                    TimeUnit.MILLISECONDS.sleep(300);
-                } catch (Exception e) {
-                    System.out.println(e);
-                }
-                this.on = true;
-            }
-
-        } else if(gameState == 7){
-
-        }
-    }
 }
 
 
